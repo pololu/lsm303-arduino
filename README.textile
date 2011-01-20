@@ -24,6 +24,7 @@ After receiving the board, make the following connections with wires:
                        GND  ->  GND
               Analog Pin 5  ->  SCL
               Analog Pin 4  ->  SDA
+
 			  
 h2. Example Programs
   
