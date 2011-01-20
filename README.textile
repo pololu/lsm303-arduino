@@ -13,9 +13,7 @@ Install this library in the Arduino libraries folder. The folder should be named
 
 pre. arduino/libraries/LSM303DLH
 
-The board for the LSM303DLH can be purchased on Pololu's website:
-
-pre. http://www.pololu.com/catalog/product/1250
+The board for the LSM303DLH can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250
   
 After receiving the board, make the following connections with wires:
 
