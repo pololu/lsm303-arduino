@@ -1,4 +1,4 @@
-h1. Pololu LSM303DLH Arduino Library
+h1. Arduino library for the Pololu LSM303DLH carrier board
 
 Release Date: 2011-01-20
 http://www.pololu.com/
