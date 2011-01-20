@@ -9,9 +9,11 @@ This is a library for the Arduino that interfaces with the "Pololu LSM303DLH":ht
 
 h2. Getting Started
 
-Install this library in the Arduino libraries folder. The folder should be named LSM303DLH and look like this:
+h3. Software
 
-pre. arduino/libraries/LSM303DLH
+Decompress the zip and drag "LSM303DLH" folder to Arduino's "libraries" folder inside your sketch folder. Restart the Arduino environment.
+
+h3. Hardware
 
 The board for the LSM303DLH can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
   
