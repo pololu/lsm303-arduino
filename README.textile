@@ -19,19 +19,20 @@ The board for the LSM303DLH can be purchased on Pololu's website:
   
 After receiving the board, make the following connections with wires:
 
-    Arduino Uno/Duemilanove	->  LSM303DLH Carrier
+    Arduino Uno/Duemilanove ->  LSM303DLH Carrier
                         5V  ->  VIN
                        GND  ->  GND
               Analog Pin 5  ->  SCL
               Analog Pin 4  ->  SDA
 			  
 h2. Example Programs
-
+  
+  Open the example code sketch by going to File->Examples->LSM303DLH->example_name
 
 h3. Serial
 
-Run the example code by going to File->Examples->LSM303DLH->serial. Program the Arduino, and the accelerometer
-and magnetometer readings will be output to the serial monitor. Here is an example of what you will see:
+Program the Arduino, and the accelerometer and magnetometer readings will be output 
+to the serial monitor. Here is an example of what you will see:
 
 	A X: -151 Y: 848 Z: -509 M X: 281 Y: -442 Z: 87
 	A X: -147 Y: 847 Z: -509 M X: 266 Y: -446 Z: 78
