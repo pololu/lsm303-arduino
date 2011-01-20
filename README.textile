@@ -5,7 +5,7 @@ http://www.pololu.com/
 
 h2. Summary
 
-This is a library for the Arduino that interfaces with the LSM303DLH.
+This is a library for the Arduino that interfaces with the "Pololu LSM303DLH":http://www.pololu.com/catalog/product/1250 carrier board.
 
 h2. Getting Started
 
