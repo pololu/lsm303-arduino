@@ -11,19 +11,19 @@ h2. Getting Started
 
 Install this library in the Arduino libraries folder. The folder should be named LSM303DLH and look like this:
 
-pre.  arduino/libraries/LSM303DLH
+pre. arduino/libraries/LSM303DLH
 
 The board for the LSM303DLH can be purchased on Pololu's website:
 
-pre.  http://www.pololu.com/catalog/product/1250
+pre. http://www.pololu.com/catalog/product/1250
   
 After receiving the board, make the following connections with wires:
 
-pre.  Arduino Uno/Duemilanove     LSM303DLH Carrier
-                     5V  ->  VIN
-                    GND  ->  GND
-           Analog Pin 5  ->  SCL
-           Analog Pin 4  ->  SDA
+pre. Arduino Uno/Duemilanove     LSM303DLH Carrier
+                    5V  ->  VIN
+                   GND  ->  GND
+          Analog Pin 5  ->  SCL
+          Analog Pin 4  ->  SDA
   
 h2. Example Programs
   
@@ -34,6 +34,6 @@ h3. Serial
 Program the Arduino, and the accelerometer and magnetometer readings will be output 
 to the serial monitor. Here is an example of what you will see:
 
-pre.   A X: -151 Y: 848 Z: -509 M X: 281 Y: -442 Z: 87
-  A X: -147 Y: 847 Z: -509 M X: 266 Y: -446 Z: 78
-  A X: -147 Y: 849 Z: -508 M X: 280 Y: -450 Z: 81
+pre. A X: -151 Y: 848 Z: -509 M X: 281 Y: -442 Z: 87
+A X: -147 Y: 847 Z: -509 M X: 266 Y: -446 Z: 78
+A X: -147 Y: 849 Z: -508 M X: 280 Y: -450 Z: 81
