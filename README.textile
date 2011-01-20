@@ -19,7 +19,7 @@ pre.  http://www.pololu.com/catalog/product/1250
   
 After receiving the board, make the following connections with wires:
 
-pre.  Arduino Uno/Duemilanove ->  LSM303DLH Carrier
+pre.  Arduino Uno/Duemilanove     LSM303DLH Carrier
                      5V  ->  VIN
                     GND  ->  GND
            Analog Pin 5  ->  SCL
