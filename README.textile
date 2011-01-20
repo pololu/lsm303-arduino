@@ -25,7 +25,7 @@ After receiving the board, make the following connections with wires:
               Analog Pin 5  ->  SCL
               Analog Pin 4  ->  SDA
 
-			  
+  
 h2. Example Programs
   
 Open the example code sketch by going to File->Examples->LSM303DLH->example_name
