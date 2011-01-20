@@ -14,17 +14,19 @@ void loop() {
 
   Serial.print("A ");
   Serial.print("X: ");
-  Serial.print(compass.accelerometerX);
+  Serial.print(compass.a.x);
   Serial.print(" Y: ");
-  Serial.print(compass.accelerometerY);
+  Serial.print(compass.a.y);
   Serial.print(" Z: ");
-  Serial.print(compass.accelerometerZ);
+  Serial.print(compass.a.z);
 
   Serial.print(" M ");  
   Serial.print("X: ");
-  Serial.print(compass.magnetometerX);
+  Serial.print(compass.m.x);
   Serial.print(" Y: ");
-  Serial.print(compass.magnetometerY);
+  Serial.print(compass.m.y);
   Serial.print(" Z: ");
-  Serial.println(compass.magnetometerZ);
+  Serial.println(compass.m.z);
+  
+  delay(100);
 }

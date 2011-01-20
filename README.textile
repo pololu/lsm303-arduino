@@ -35,3 +35,22 @@ to the serial monitor. Here is an example of what you will see:
 pre. A X: -151 Y: 848 Z: -509 M X: 281 Y: -442 Z: 87
 A X: -147 Y: 847 Z: -509 M X: 266 Y: -446 Z: 78
 A X: -147 Y: 849 Z: -508 M X: 280 Y: -450 Z: 81
+
+For calibration purposes it is useful to record the maximum and minimum magnetometer values you get when moving the compass through every possible orientation.
+
+h3. Heading
+
+Program the Arduino, and the degrees of the heading from the -Y axis will be outputted in the serial monitor.
+
+
+h2. Command Reference
+
+pre. vector a - the last reading of the accelerometer values.
+vector m - the last reading of the magnetometer values.
+vector m_max - the maximum magnetometer readings found, use for calibration.
+vector m_min - the minimum magnetometer readings found, use for calibration.
+LSM303DLH() - Constructor
+void enable(void) - Turns on the magnetometer and accelerometer
+void read(void) - Takes a reading and stores the values in the vectors a and m.
+int heading(void) - Returns the degrees headed away from the -Y axis
+int heading(vector from) - Returns the degrees headed away from from
