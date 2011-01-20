@@ -1,6 +1,6 @@
 h1. Pololu LSM303DLH Arduino Library
 
-Release Date: 2011-1-20
+Release Date: 2011-01-20
 http://www.pololu.com/
 
 h2. Summary
