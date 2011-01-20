@@ -11,20 +11,19 @@ h2. Getting Started
 
 Install this library in the Arduino libraries folder. The folder should be named LSM303DLH and look like this:
 
-	arduino/libraries/LSM303DLH
+pre.  arduino/libraries/LSM303DLH
 
 The board for the LSM303DLH can be purchased on Pololu's website:
 
-	http://www.pololu.com/catalog/product/1250
+pre.  http://www.pololu.com/catalog/product/1250
   
 After receiving the board, make the following connections with wires:
 
-    Arduino Uno/Duemilanove ->  LSM303DLH Carrier
+pre.     Arduino Uno/Duemilanove ->  LSM303DLH Carrier
                         5V  ->  VIN
                        GND  ->  GND
               Analog Pin 5  ->  SCL
               Analog Pin 4  ->  SDA
-
   
 h2. Example Programs
   
