@@ -27,6 +27,7 @@ After receiving the board, make the following connections with wires:
 			  
 h2. Example Programs
 
+
 h3. Serial
 
 Run the example code by going to File->Examples->LSM303DLH->serial. Program the Arduino, and the accelerometer
