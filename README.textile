@@ -28,7 +28,7 @@ After receiving the board, make the following connections with wires:
 			  
 h2. Example Programs
   
-  Open the example code sketch by going to File->Examples->LSM303DLH->example_name
+Open the example code sketch by going to File->Examples->LSM303DLH->example_name
 
 h3. Serial
 
