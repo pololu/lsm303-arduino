@@ -42,7 +42,7 @@ For calibration purposes it is useful to record the maximum and minimum magnetom
 
 h3. Heading
 
-Program the Arduino, and the degrees of the heading from the -Y axis will be output to the serial monitor.
+Program the Arduino, and the tilt-compensated degrees of the heading from the -Y axis will be output to the serial monitor.
 
 h2. Command Reference
 
