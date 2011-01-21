@@ -6,7 +6,7 @@ http://www.pololu.com/
 
 h2. Summary
 
-This is a library for the Arduino that interfaces with the "Pololu LSM303DLH":http://www.pololu.com/catalog/product/1250 carrier board. It can compute the tilt-compensated heading.
+This is a library for the Arduino that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250 with voltage regulators. It lets you access the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading, which makes it easy to use this sensor into a tilt-compensated compass.
 
 h2. Getting Started
 
