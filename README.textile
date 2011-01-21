@@ -6,7 +6,7 @@ http://www.pololu.com/
 
 h2. Summary
 
-This is a library for the Arduino that interfaces with the "Pololu LSM303DLH":http://www.pololu.com/catalog/product/1250 carrier board.
+This is a library for the Arduino that interfaces with the "Pololu LSM303DLH":http://www.pololu.com/catalog/product/1250 carrier board. It can compute the tilt-compensated heading.
 
 h2. Getting Started
 
@@ -53,5 +53,5 @@ vector m_min - the minimum magnetometer readings found, use for calibration.
 LSM303DLH() - Constructor
 void enable(void) - Turns on the magnetometer and accelerometer
 void read(void) - Takes a reading and stores the values in the vectors a and m.
-int heading(void) - Returns the degrees headed away from the -Y axis
-int heading(vector from) - Returns the degrees headed away from from
+int heading(void) - Returns the tilt-compensated degrees headed away from the -Y axis
+int heading(vector from) - Returns the tilt-compensated  degrees headed away from from
