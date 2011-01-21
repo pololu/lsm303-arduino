@@ -6,13 +6,13 @@ http://www.pololu.com/
 
 h2. Summary
 
-This is a library for the Arduino that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250. It lets you access the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading, which makes it easy to use this sensor into a tilt-compensated compass.
+This is a library for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250. It makes it simple to read the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading for those looking to use this sensor as a tilt-compensated compass.
 
 h2. Getting Started
 
 h3. Software
 
-Decompress the zip and drag "LSM303DLH" folder to Arduino's "libraries" folder inside your sketch folder. Restart the Arduino environment.
+Download the archive from "GIthub":https://github.com/ryantm/LSM303DLH, decompress it, and drag the "LSM303DLH" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303DLH library and its examples.
 
 h3. Hardware
 
