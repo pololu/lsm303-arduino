@@ -12,7 +12,7 @@ h2. Getting Started
 
 h3. Software
 
-Download the archive from "GIthub":https://github.com/ryantm/LSM303DLH, decompress it, and drag the "LSM303DLH" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303DLH library and its examples.
+Download the archive from "GitHub":https://github.com/ryantm/LSM303DLH, decompress it, and drag the "LSM303DLH" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303DLH library and its examples.
 
 h3. Hardware
 
