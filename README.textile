@@ -26,7 +26,7 @@ pre. Arduino Uno/Duemilanove     LSM303DLH Carrier
           Analog Pin 5  ->  SCL
           Analog Pin 4  ->  SDA
 
-pre. Arduino Mega     LSM303DLH Carrier
+pre. Arduino Mega                LSM303DLH Carrier
                     5V  ->  VIN
                    GND  ->  GND
          Analog Pin 21  ->  SCL
