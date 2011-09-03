@@ -22,11 +22,11 @@
 #define LSM303DLH_OUT_Z_H_A         0x2D
 
 #define LSM303DLH_INT1_CFG_A        0x30
-#define LSM303DLH_INT1_SOURCE_A     0x31
+#define LSM303DLH_INT1_SRC_A        0x31
 #define LSM303DLH_INT1_THS_A        0x32
 #define LSM303DLH_INT1_DURATION_A   0x33
 #define LSM303DLH_INT2_CFG_A        0x34
-#define LSM303DLH_INT2_SOURCE_A     0x35
+#define LSM303DLH_INT2_SRC_A        0x35
 #define LSM303DLH_INT2_THS_A        0x36
 #define LSM303DLH_INT2_DURATION_A   0x37
 
