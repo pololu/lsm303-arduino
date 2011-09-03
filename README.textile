@@ -1,7 +1,7 @@
 h1. Arduino library for the Pololu LSM303DLH carrier board
 
-Version: 1.0.0
-Release Date: 2011-01-20
+Version: 1.0.1
+Release Date: 2011-09-??
 http://www.pololu.com/
 
 h2. Summary
@@ -18,7 +18,7 @@ h3. Hardware
 
 The board for the LSM303DLH can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
   
-After receiving the board, make the following connections with wires:
+Make the following connections with wires between the Arduino and the LSM303DLH:
 
 pre. Arduino Uno/Duemilanove     LSM303DLH Carrier
                     5V  ->  VIN
@@ -34,30 +34,41 @@ pre. Arduino Mega                LSM303DLH Carrier
   
 h2. Example Programs
   
-Open the example code sketch by going to File->Examples->LSM303DLH->example_name
+Open an example code sketch by selecting File->Examples->LSM303DLH->example_name
 
 h3. Serial
 
-Program the Arduino, and the accelerometer and magnetometer readings will be output to the serial monitor. Here is an example of what you will see:
+This program continuously reads the accelerometer and magnetometer, communicating the readings over the serial interface. You can display the readings with the Arduino Serial Monitor.
+
+Example output:
 
 pre. A X: -151 Y: 848 Z: -509 M X: 281 Y: -442 Z: 87
 A X: -147 Y: 847 Z: -509 M X: 266 Y: -446 Z: 78
 A X: -147 Y: 849 Z: -508 M X: 280 Y: -450 Z: 81
 
-For calibration purposes it is useful to record the maximum and minimum magnetometer values you get when moving the compass through every possible orientation.
+h3. Calibrate
+
+This program is similar to the Serial example, but instead of printing the most recent readings, it prints a running minimum and maximum of the readings from each magnetometer axis. These values can be used to calibrate the @heading()@ functions and the Heading example after moving the LSM303DLH through every possible orientation.
 
 h3. Heading
 
-Program the Arduino, and the tilt-compensated degrees of the heading from the -Y axis will be output to the serial monitor.
+This program uses readings from the accelerometer and magnetometer to calculate a tilt-compensated compass heading (in degrees relative to the negative Y axis), which is communicated serially and can be displayed with the Arduino Serial Monitor. For the most accurate results, you should replace the values of @m_min@ and @m_max@ assigned in the @setup()@ function with your own values obtained from the Calibrate example.
 
-h2. Command Reference
+h2. Library Reference
 
-pre. vector a - the last reading of the accelerometer values.
-vector m - the last reading of the magnetometer values.
-vector m_max - the maximum magnetometer readings found, use for calibration.
-vector m_min - the minimum magnetometer readings found, use for calibration.
-LSM303DLH() - Constructor
-void enable(void) - Turns on the magnetometer and accelerometer
-void read(void) - Takes a reading and stores the values in the vectors a and m.
-int heading(void) - Returns the tilt-compensated degrees headed away from the -Y axis
-int heading(vector from) - Returns the tilt-compensated  degrees headed away from from
+- @vector a@ := The last values read from the accelerometer.
+- @vector m@ := The last values read from the magnetometer.
+- @vector m_min@ := Lower bounds (minimum values) for the magnetometer readings on each axis; set this appropriately to calibrate @heading()@.
+- @vector m_max@ := Upper bounds (maximum values) for the magnetometer readings on each axis; set this appropriately to calibrate @heading()@.
+
+- @LSM303DLH(void)@ := Constructor; initializes @m_min@ and @m_max@ with placeholder values.
+- @void enableDefault(void)@ := Turns on the accelerometer and magnetometer in the default configuration. (This function was previously called @enable()@.)
+- @void writeAccReg(byte reg, byte value)@ := Writes an accelerometer register with the given value. Register address constants are defined in LSM303DLH.h.
+- @byte readAccReg(byte reg)@ := Reads an accelerometer register and returns the value read.
+- @void writeMagReg(byte reg, byte value)@ := Writes a magnetometer register with the given value.
+- @byte readMagReg(byte reg)@ := Reads a magnetometer register and returns the value read.
+- @void readAcc(void)@ := Takes a reading from the accelerometer and stores the values in the vector @a@.
+- @void readMag(void)@ := Takes a reading from the magnetometer and stores the values in the vector @m@.
+- @void read(void)@ := Takes a reading from both the accelerometer and magnetometer and stores the values in the vectors @a@ and @m@.
+- @int heading(void)@ := Returns the tilt-compensated heading in degrees headed away from the negative Y axis.
+- @int heading(vector from)@ := Returns the tilt-compensated heading in degrees headed away from the from vector.

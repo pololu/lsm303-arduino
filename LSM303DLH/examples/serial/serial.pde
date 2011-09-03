@@ -6,7 +6,7 @@ LSM303DLH compass;
 void setup() {
   Serial.begin(9600);
   Wire.begin();
-  compass.enable();
+  compass.enableDefault();
 }
 
 void loop() {
