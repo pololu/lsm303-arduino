@@ -8,7 +8,7 @@ void setup() {
   Wire.begin();
   compass.enableDefault();
   
-  // Calibration values. Use the calibrate example program to get the values for
+  // Calibration values. Use the Calibrate example program to get the values for
   // your compass.
   compass.m_min.x = -520; compass.m_min.y = -570; compass.m_min.z = -770;
   compass.m_max.x = +540; compass.m_max.y = +500; compass.m_max.z = 180;
