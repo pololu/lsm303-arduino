@@ -1,6 +1,6 @@
 #ifndef LSM303DLH_h
 #define LSM303DLH_h
-#include <vector.h>
+
 #include <WProgram.h> // for byte data type
 
 // register addresses
@@ -49,6 +49,11 @@
 class LSM303DLH
 {
 	public:
+		typedef struct vector
+		{
+			float x, y, z;
+		} vector;
+		
 		vector a; // accelerometer readings
 		vector m; // magnetometer readings
 		vector m_max; // maximum magnetometer values, used for calibration
@@ -69,6 +74,11 @@ class LSM303DLH
 		
 		int heading(void);
 		int heading(vector from);
+		
+		// vector functions
+		static void vector_cross(const vector *a, const vector *b, vector *out);
+		static float vector_dot(const vector *a,const vector *b);
+		static void vector_normalize(vector *a);
 };
 
 #endif
