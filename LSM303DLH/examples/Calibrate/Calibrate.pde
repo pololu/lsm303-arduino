@@ -23,19 +23,19 @@ void loop() {
   
   Serial.print("M min ");
   Serial.print("X: ");
-  Serial.print(running_min.x);
+  Serial.print((int)running_min.x);
   Serial.print(" Y: ");
-  Serial.print(running_min.y);
+  Serial.print((int)running_min.y);
   Serial.print(" Z: ");
-  Serial.print(running_min.z);
+  Serial.print((int)running_min.z);
 
   Serial.print(" M max ");  
   Serial.print("X: ");
-  Serial.print(running_max.x);
+  Serial.print((int)running_max.x);
   Serial.print(" Y: ");
-  Serial.print(running_max.y);
+  Serial.print((int)running_max.y);
   Serial.print(" Z: ");
-  Serial.println(running_max.z);
+  Serial.println((int)running_max.z);
   
   delay(100);
 }

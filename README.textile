@@ -12,12 +12,12 @@ h2. Getting Started
 
 h3. Software
 
-Download the archive from "GitHub":https://github.com/ryantm/LSM303DLH, decompress it, and drag the "LSM303DLH" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303DLH library and its examples.
+Download the archive from "GitHub":https://github.com/pololu/LSM303DLH, decompress it, and drag the "LSM303DLH" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303DLH library and its examples.
 
 h3. Hardware
 
 The board for the LSM303DLH can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
-  
+
 Make the following connections with wires between the Arduino and the LSM303DLH:
 
 pre. Arduino Uno/Duemilanove     LSM303DLH Carrier
@@ -31,9 +31,9 @@ pre. Arduino Mega                LSM303DLH Carrier
                    GND  ->  GND
          Analog Pin 21  ->  SCL
          Analog Pin 20  ->  SDA
-  
+
 h2. Example Programs
-  
+
 Open an example code sketch by selecting File->Examples->LSM303DLH->example_name
 
 h3. Serial
