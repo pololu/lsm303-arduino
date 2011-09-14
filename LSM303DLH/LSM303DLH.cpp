@@ -144,16 +144,25 @@ int LSM303DLH::heading(void)
 	return heading((vector){0,-1,0});
 }
 
-// Returns the number of degrees from the from vector that it
-// is pointing.
+// Returns the number of degrees from the From vector projected into
+// the horizontal plane is away from north.
+// 
+// Description of heading algorithm: 
+// Shift and scale the magnetic reading based on calibration data to
+// to find the North vector. Use the acceleration readings to
+// determine the Down vector. The cross product of North and Down
+// vectors is East. The vectors East and North form a basis for the
+// horizontal plane. The From vector is projected into the horizontal
+// plane and the angle between the projected vector and north is
+// returned.
 int LSM303DLH::heading(vector from)
 {
-	// shift and scale
+    // shift and scale
     m.x = (m.x - m_min.x) / (m_max.x - m_min.x) * 2 - 1.0;
     m.y = (m.y - m_min.y) / (m_max.y - m_min.y) * 2 - 1.0;
     m.z = (m.z - m_min.z) / (m_max.z - m_min.z) * 2 - 1.0;
 
-	vector temp_a = a;
+    vector temp_a = a;
     // normalize
     vector_normalize(&temp_a);
     //vector_normalize(&m);
