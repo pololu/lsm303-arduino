@@ -1,4 +1,4 @@
-#include <LSM303DLH.h>
+#include <LSM303.h>
 #include <Wire.h>
 #include <math.h>
 
@@ -11,7 +11,7 @@
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-LSM303DLH::LSM303DLH(void)
+LSM303::LSM303(void)
 {
 	// These are just some values for a particular unit; it is recommended that
 	// a calibration be done for your particular unit.
@@ -21,23 +21,23 @@ LSM303DLH::LSM303DLH(void)
 
 // Public Methods //////////////////////////////////////////////////////////////
 
-// Turns on the LSM303DLH's accelerometer and magnetometers and places them in normal
+// Turns on the LSM303's accelerometer and magnetometers and places them in normal
 // mode.
-void LSM303DLH::enableDefault(void)
+void LSM303::enableDefault(void)
 {
 	// Enable Accelerometer
 	// 0x27 = 0b00100111
 	// Normal power mode, all axes enabled
-	writeAccReg(LSM303DLH_CTRL_REG1_A, 0x27);
+	writeAccReg(LSM303_CTRL_REG1_A, 0x27);
   
 	// Enable Magnetometer
 	// 0x00 = 0b00000000
 	// Continuous conversion mode
-	writeMagReg(LSM303DLH_MR_REG_M, 0x00);
+	writeMagReg(LSM303_MR_REG_M, 0x00);
 }
 
 // Writes an accelerometer register
-void LSM303DLH::writeAccReg(byte reg, byte value)
+void LSM303::writeAccReg(byte reg, byte value)
 {
 	Wire.beginTransmission(ACC_ADDRESS);
 	Wire.send(reg);
@@ -46,7 +46,7 @@ void LSM303DLH::writeAccReg(byte reg, byte value)
 }
 
 // Reads an accelerometer register
-byte LSM303DLH::readAccReg(byte reg)
+byte LSM303::readAccReg(byte reg)
 {
 	byte value;
 	
@@ -61,7 +61,7 @@ byte LSM303DLH::readAccReg(byte reg)
 }
 
 // Writes a magnetometer register
-void LSM303DLH::writeMagReg(byte reg, byte value)
+void LSM303::writeMagReg(byte reg, byte value)
 {
 	Wire.beginTransmission(MAG_ADDRESS);
 	Wire.send(reg);
@@ -70,7 +70,7 @@ void LSM303DLH::writeMagReg(byte reg, byte value)
 }
 
 // Reads a magnetometer register
-byte LSM303DLH::readMagReg(byte reg)
+byte LSM303::readMagReg(byte reg)
 {
 	byte value;
 	
@@ -85,12 +85,12 @@ byte LSM303DLH::readMagReg(byte reg)
 }
 
 // Reads the 3 accelerometer channels and stores them in vector a
-void LSM303DLH::readAcc(void)
+void LSM303::readAcc(void)
 {
 	Wire.beginTransmission(ACC_ADDRESS);
 	// assert the MSB of the address to get the accelerometer 
 	// to do slave-transmit subaddress updating.
-	Wire.send(LSM303DLH_OUT_X_L_A | (1 << 7)); 
+	Wire.send(LSM303_OUT_X_L_A | (1 << 7)); 
 	Wire.endTransmission();
 	Wire.requestFrom(ACC_ADDRESS, 6);
 
@@ -109,10 +109,10 @@ void LSM303DLH::readAcc(void)
 }
 
 // Reads the 3 magnetometer channels and stores them in vector m
-void LSM303DLH::readMag(void)
+void LSM303::readMag(void)
 {
 	Wire.beginTransmission(MAG_ADDRESS);
-	Wire.send(LSM303DLH_OUT_X_H_M);
+	Wire.send(LSM303_OUT_X_H_M);
 	Wire.endTransmission();
 	Wire.requestFrom(MAG_ADDRESS, 6);
 
@@ -130,8 +130,8 @@ void LSM303DLH::readMag(void)
 	m.z = (zhm << 8 | zlm);
 }
 
-// Reads all 6 channels of the LSM303DLH and stores them in the object variables
-void LSM303DLH::read(void)
+// Reads all 6 channels of the LSM303 and stores them in the object variables
+void LSM303::read(void)
 {
 	readAcc();
 	readMag();
@@ -139,7 +139,7 @@ void LSM303DLH::read(void)
 
 // Returns the number of degrees from the -Y axis that it
 // is pointing.
-int LSM303DLH::heading(void)
+int LSM303::heading(void)
 {
 	return heading((vector){0,-1,0});
 }
@@ -155,7 +155,7 @@ int LSM303DLH::heading(void)
 // horizontal plane. The From vector is projected into the horizontal
 // plane and the angle between the projected vector and north is
 // returned.
-int LSM303DLH::heading(vector from)
+int LSM303::heading(vector from)
 {
     // shift and scale
     m.x = (m.x - m_min.x) / (m_max.x - m_min.x) * 2 - 1.0;
@@ -180,19 +180,19 @@ int LSM303DLH::heading(vector from)
 	return heading;
 }
 
-void LSM303DLH::vector_cross(const vector *a,const vector *b, vector *out)
+void LSM303::vector_cross(const vector *a,const vector *b, vector *out)
 {
   out->x = a->y*b->z - a->z*b->y;
   out->y = a->z*b->x - a->x*b->z;
   out->z = a->x*b->y - a->y*b->x;
 }
 
-float LSM303DLH::vector_dot(const vector *a,const vector *b)
+float LSM303::vector_dot(const vector *a,const vector *b)
 {
   return a->x*b->x+a->y*b->y+a->z*b->z;
 }
 
-void LSM303DLH::vector_normalize(vector *a)
+void LSM303::vector_normalize(vector *a)
 {
   float mag = sqrt(vector_dot(a,a));
   a->x /= mag;
