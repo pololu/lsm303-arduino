@@ -16,7 +16,7 @@ void setup() {
 
 void loop() {
   compass.read();
-  int heading = compass.heading((vector){0,-1,0});
+  int heading = compass.heading((LSM303DLH::vector){0,-1,0});
   Serial.println(heading);
   delay(100);
 }
