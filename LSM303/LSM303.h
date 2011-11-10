@@ -5,9 +5,9 @@
 
 // device types
 
-#define LSM303_DEVICE_DLH  0
-#define LSM303_DEVICE_DLM  1
-#define LSM303_DEVICE_DLHC 2
+#define LSM303DLH_DEVICE   0
+#define LSM303DLM_DEVICE   1
+#define LSM303DLHC_DEVICE  2
 #define LSM303_DEVICE_AUTO 3
 
 // SA0_A states
@@ -129,6 +129,8 @@ class LSM303
 	private:
 		byte _device; // chip type (DLH, DLM, or DLHC)
 		byte acc_address;
+		
+		byte detectSA0_A(void);
 };
 
 #endif

@@ -6,8 +6,9 @@
 
 // The Arduino two-wire interface uses a 7-bit number for the address, 
 // and sets the last bit correctly based on reads and writes
-#define ACC_ADDRESS (0x30 >> 1)
-#define MAG_ADDRESS (0x3C >> 1)
+#define MAG_ADDRESS            (0x3C >> 1)
+#define ACC_ADDRESS_SA0_A_LOW  (0x30 >> 1)
+#define ACC_ADDRESS_SA0_A_HIGH (0x32 >> 1)
 
 // Constructors ////////////////////////////////////////////////////////////////
 
@@ -17,9 +18,48 @@ LSM303::LSM303(void)
 	// a calibration be done for your particular unit.
 	m_max.x = +540; m_max.y = +500; m_max.z = 180;
 	m_min.x = -520; m_min.y = -570; m_min.z = -770;
+	
+	_device = LSM303_DEVICE_AUTO;
+	acc_address = ACC_ADDRESS_SA0_A_LOW;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
+
+void LSM303::init(byte device, byte sa0_a)
+{	
+	_device = device;
+	switch (_device)
+	{
+		case LSM303DLH_DEVICE:
+		case LSM303DLM_DEVICE:
+			if (sa0_a == LSM303_SA0_A_LOW)
+				acc_address = ACC_ADDRESS_SA0_A_LOW;
+			else if (sa0_a == LSM303_SA0_A_HIGH)
+				acc_address = ACC_ADDRESS_SA0_A_HIGH;
+			else
+				acc_address = (detectSA0_A() == LSM303_SA0_A_HIGH) ? ACC_ADDRESS_SA0_A_HIGH : ACC_ADDRESS_SA0_A_LOW;
+			break;	
+		
+		case LSM303DLHC_DEVICE:
+			acc_address = ACC_ADDRESS_SA0_A_HIGH;
+			break;
+			
+		default:
+			// try to auto-detect device
+			if (detectSA0_A() == LSM303_SA0_A_HIGH)
+			{
+				// if device responds on 0011001b (SA0_A is high), assume DLHC
+				acc_address = ACC_ADDRESS_SA0_A_HIGH;
+				_device = LSM303DLHC_DEVICE;
+			}
+			else
+			{
+				// otherwise, assume DLH or DLM (pulled low by default on Pololu boards); query magnetometer WHO_AM_I to differentiate these two
+				acc_address = ACC_ADDRESS_SA0_A_LOW;
+				_device = (readMagReg(LSM303_WHO_AM_I_M) == 0x3C) ? LSM303DLM_DEVICE : LSM303DLH_DEVICE;
+			}
+	}
+}
 
 // Turns on the LSM303's accelerometer and magnetometers and places them in normal
 // mode.
@@ -39,7 +79,7 @@ void LSM303::enableDefault(void)
 // Writes an accelerometer register
 void LSM303::writeAccReg(byte reg, byte value)
 {
-	Wire.beginTransmission(ACC_ADDRESS);
+	Wire.beginTransmission(acc_address);
 	Wire.send(reg);
 	Wire.send(value);
 	Wire.endTransmission();
@@ -50,10 +90,10 @@ byte LSM303::readAccReg(byte reg)
 {
 	byte value;
 	
-	Wire.beginTransmission(ACC_ADDRESS);
+	Wire.beginTransmission(acc_address);
 	Wire.send(reg);
 	Wire.endTransmission();
-	Wire.requestFrom(ACC_ADDRESS, 1);
+	Wire.requestFrom(acc_address, (byte)1);
 	value = Wire.receive();
 	Wire.endTransmission();
 	
@@ -70,9 +110,29 @@ void LSM303::writeMagReg(byte reg, byte value)
 }
 
 // Reads a magnetometer register
-byte LSM303::readMagReg(byte reg)
+byte LSM303::readMagReg(int reg)
 {
 	byte value;
+	
+	// if dummy register address (magnetometer Y/Z), use device type to determine actual address
+	if (reg < 0)
+	{
+		switch (reg)
+		{
+			case LSM303_OUT_Y_H_M:
+				reg = (_device == LSM303DLH_DEVICE) ? LSM303DLH_OUT_Y_H_M : LSM303DLM_OUT_Y_H_M;
+				break;
+			case LSM303_OUT_Y_L_M:
+				reg = (_device == LSM303DLH_DEVICE) ? LSM303DLH_OUT_Y_L_M : LSM303DLM_OUT_Y_L_M;
+				break;
+			case LSM303_OUT_Z_H_M:
+				reg = (_device == LSM303DLH_DEVICE) ? LSM303DLH_OUT_Z_H_M : LSM303DLM_OUT_Z_H_M;
+				break;
+			case LSM303_OUT_Z_L_M:
+				reg = (_device == LSM303DLH_DEVICE) ? LSM303DLH_OUT_Z_L_M : LSM303DLM_OUT_Z_L_M;
+				break;
+		}
+	}
 	
 	Wire.beginTransmission(MAG_ADDRESS);
 	Wire.send(reg);
@@ -87,21 +147,21 @@ byte LSM303::readMagReg(byte reg)
 // Reads the 3 accelerometer channels and stores them in vector a
 void LSM303::readAcc(void)
 {
-	Wire.beginTransmission(ACC_ADDRESS);
+	Wire.beginTransmission(acc_address);
 	// assert the MSB of the address to get the accelerometer 
 	// to do slave-transmit subaddress updating.
 	Wire.send(LSM303_OUT_X_L_A | (1 << 7)); 
 	Wire.endTransmission();
-	Wire.requestFrom(ACC_ADDRESS, 6);
+	Wire.requestFrom(acc_address, (byte)6);
 
 	while (Wire.available() < 6);
 	
-	uint8_t xla = Wire.receive();
-	uint8_t xha = Wire.receive();
-	uint8_t yla = Wire.receive();
-	uint8_t yha = Wire.receive();
-	uint8_t zla = Wire.receive();
-	uint8_t zha = Wire.receive();
+	byte xla = Wire.receive();
+	byte xha = Wire.receive();
+	byte yla = Wire.receive();
+	byte yha = Wire.receive();
+	byte zla = Wire.receive();
+	byte zha = Wire.receive();
 
 	a.x = (xha << 8 | xla) >> 4;
 	a.y = (yha << 8 | yla) >> 4;
@@ -118,12 +178,28 @@ void LSM303::readMag(void)
 
 	while (Wire.available() < 6);
 
-	uint8_t xhm = Wire.receive();
-	uint8_t xlm = Wire.receive();
-	uint8_t yhm = Wire.receive();
-	uint8_t ylm = Wire.receive();
-	uint8_t zhm = Wire.receive();
-	uint8_t zlm = Wire.receive();
+	byte xhm = Wire.receive();
+	byte xlm = Wire.receive();
+	
+	byte yhm, ylm, zhm, zlm;
+	
+	if (_device == LSM303DLH_DEVICE)
+	{
+		// DLH: register address for Y comes before Z
+		yhm = Wire.receive();
+		ylm = Wire.receive();
+		zhm = Wire.receive();
+		zlm = Wire.receive();
+	}
+	else
+	{
+		// DLM, DLHC: register address for Z comes before Y
+		zhm = Wire.receive();
+		zlm = Wire.receive();
+		yhm = Wire.receive();
+		ylm = Wire.receive();
+
+	}
 
 	m.x = (xhm << 8 | xlm);
 	m.y = (yhm << 8 | ylm);
@@ -198,4 +274,21 @@ void LSM303::vector_normalize(vector *a)
   a->x /= mag;
   a->y /= mag;
   a->z /= mag;
+}
+
+// Private Methods //////////////////////////////////////////////////////////////
+
+byte LSM303::detectSA0_A(void)
+{
+	Wire.beginTransmission(ACC_ADDRESS_SA0_A_LOW);
+	Wire.send(LSM303_CTRL_REG1_A);
+	Wire.endTransmission();
+	Wire.requestFrom(ACC_ADDRESS_SA0_A_LOW, 1);
+	if (Wire.available())
+	{
+		Wire.receive();
+		return LSM303_SA0_A_LOW;
+	}
+	else
+		return LSM303_SA0_A_HIGH;
 }
