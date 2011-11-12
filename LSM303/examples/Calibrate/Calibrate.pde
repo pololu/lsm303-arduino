@@ -1,12 +1,13 @@
 #include <Wire.h>
-#include <LSM303DLH.h>
+#include <LSM303.h>
 
-LSM303DLH compass;
-LSM303DLH::vector running_min = {2047, 2047, 2047}, running_max = {-2048, -2048, -2048};
+LSM303 compass;
+LSM303::vector running_min = {2047, 2047, 2047}, running_max = {-2048, -2048, -2048};
 
 void setup() {
   Serial.begin(9600);
   Wire.begin();
+  compass.init();
   compass.enableDefault();
 }
 
