@@ -1,11 +1,12 @@
 #include <Wire.h>
-#include <LSM303DLH.h>
+#include <LSM303.h>
 
-LSM303DLH compass;
+LSM303 compass;
 
 void setup() {
   Serial.begin(9600);
   Wire.begin();
+  compass.init();
   compass.enableDefault();
   
   // Calibration values. Use the Calibrate example program to get the values for
@@ -16,7 +17,7 @@ void setup() {
 
 void loop() {
   compass.read();
-  int heading = compass.heading((LSM303DLH::vector){0,-1,0});
+  int heading = compass.heading((LSM303::vector){0,-1,0});
   Serial.println(heading);
   delay(100);
 }

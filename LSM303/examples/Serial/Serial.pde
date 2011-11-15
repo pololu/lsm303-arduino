@@ -1,11 +1,12 @@
 #include <Wire.h>
-#include <LSM303DLH.h>
+#include <LSM303.h>
 
-LSM303DLH compass;
+LSM303 compass;
 
 void setup() {
   Serial.begin(9600);
   Wire.begin();
+  compass.init();
   compass.enableDefault();
 }
 
