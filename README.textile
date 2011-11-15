@@ -1,32 +1,32 @@
-h1. Arduino library for the Pololu LSM303DLH carrier board
+h1. Arduino library for Pololu LSM303 boards
 
-Version: 1.1.1
-Release Date: 2011-09-14
+Version: 1.2.0
+Release Date: 2011-11-14
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
 
-This is a library for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250. It makes it simple to read the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading for those looking to use this sensor as a tilt-compensated compass.
+This is a library for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250 and "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265 (it also works with the older "MinIMU-9 L3G4200D and LSM303DLH carrier":http://www.pololu.com/catalog/product/1264). It makes it simple to read the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading for those looking to use this sensor as a tilt-compensated compass.
 
 h2. Getting Started
 
 h3. Software
 
-Download the archive from "GitHub":https://github.com/pololu/LSM303DLH, decompress it, and drag the "LSM303DLH" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303DLH library and its examples.
+Download the archive from "GitHub":https://github.com/pololu/LSM303, decompress it, and drag the "LSM303" folder to your arduino-00xx/libraries directory. Then restart the Arduino environment, so the libraries can be updated to include the LSM303 library and its examples.
 
 h3. Hardware
 
-The board for the LSM303DLH can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
+The board for the LSM303 can be purchased on "Pololu's website":http://www.pololu.com/catalog/product/1250.
 
-Make the following connections with wires between the Arduino and the LSM303DLH:
+Make the following connections with wires between the Arduino and the LSM303:
 
-pre. Arduino Uno/Duemilanove     LSM303DLH Carrier
+pre. Arduino Uno/Duemilanove     LSM303 Carrier
                     5V  ->  VIN
                    GND  ->  GND
           Analog Pin 5  ->  SCL
           Analog Pin 4  ->  SDA
 
-pre. Arduino Mega                LSM303DLH Carrier
+pre. Arduino Mega                LSM303 Carrier
                     5V  ->  VIN
                    GND  ->  GND
          Analog Pin 21  ->  SCL
@@ -34,7 +34,7 @@ pre. Arduino Mega                LSM303DLH Carrier
 
 h2. Example Programs
 
-Open an example code sketch by selecting File->Examples->LSM303DLH->example_name
+Open an example code sketch by selecting File->Examples->LSM303->example_name
 
 h3. Serial
 
@@ -48,7 +48,7 @@ A X: -147 Y: 849 Z: -508 M X: 280 Y: -450 Z: 81
 
 h3. Calibrate
 
-This program is similar to the Serial example, but instead of printing the most recent readings, it prints a running minimum and maximum of the readings from each magnetometer axis. These values can be used to calibrate the @heading()@ functions and the Heading example after moving the LSM303DLH through every possible orientation.
+This program is similar to the Serial example, but instead of printing the most recent readings, it prints a running minimum and maximum of the readings from each magnetometer axis. These values can be used to calibrate the @heading()@ functions and the Heading example after moving the LSM303 through every possible orientation.
 
 h3. Heading
 
@@ -61,14 +61,19 @@ h2. Library Reference
 - @vector m_min@ := Lower bounds (minimum values) for the magnetometer readings on each axis; set this appropriately to calibrate @heading()@.
 - @vector m_max@ := Upper bounds (maximum values) for the magnetometer readings on each axis; set this appropriately to calibrate @heading()@.
 
-- @LSM303DLH(void)@ := Constructor; initializes @m_min@ and @m_max@ with placeholder values.
+- @LSM303(void)@ := Constructor; initializes @m_min@ and @m_max@ with placeholder values.
+- @void init(byte device, byte sa0_a)@ := Initializes the library with the device being used (LSM303DLH or LSM303DLM) and the state of the SA0_A (accelerometer slave address least significant bit) pin. Constants for these arguments are defined in LSM303.h. Both of these arguments are optional; if they are not specified, the library will try to automatically detect the device and accelerometer address. However, the automatic detection might fail if you do not use the Pololu boards' default accelerometer address, so you should specify your particular device if you change the state of the SA0_A pin.
 - @void enableDefault(void)@ := Turns on the accelerometer and magnetometer in the default configuration. (This function was previously called @enable()@.)
-- @void writeAccReg(byte reg, byte value)@ := Writes an accelerometer register with the given value. Register address constants are defined in LSM303DLH.h.
+- @void writeAccReg(byte reg, byte value)@ := Writes an accelerometer register with the given value. Register address constants are defined in LSM303.h.
 - @byte readAccReg(byte reg)@ := Reads an accelerometer register and returns the value read.
 - @void writeMagReg(byte reg, byte value)@ := Writes a magnetometer register with the given value.
-- @byte readMagReg(byte reg)@ := Reads a magnetometer register and returns the value read.
+- @byte readMagReg(int reg)@ := Reads a magnetometer register and returns the value read. If the magnetometer Y and Z registers are read using register address constants beginning with @LSM303_@, this function will automatically use the correct register addresses depending on the device type.
 - @void readAcc(void)@ := Takes a reading from the accelerometer and stores the values in the vector @a@.
 - @void readMag(void)@ := Takes a reading from the magnetometer and stores the values in the vector @m@.
 - @void read(void)@ := Takes a reading from both the accelerometer and magnetometer and stores the values in the vectors @a@ and @m@.
 - @int heading(void)@ := Returns the tilt-compensated heading in degrees headed away from the negative Y axis.
 - @int heading(vector from)@ := Returns the tilt-compensated heading in degrees headed away from the from vector.
+
+h3. Differences from the LSM303DLH library
+
+This library is very similar to our earlier "LSM303DLH":https://github.com/pololu/LSM303DLH library, which is not compatible with the LSM303DLM. Besides the name change, the main difference in this library is that you need to call the @init()@ function before using any of the other library functions, typically from within the Arduino @setup()@ function. While the older library only works with the Pololu boards' default accelerometer slave address of 0011000b, this library allows you to specify the slave address with the @init()@ function.
