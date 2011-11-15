@@ -1,7 +1,7 @@
 h1. Arduino library for Pololu LSM303 boards
 
 Version: 1.2.0
-Release Date: 2011-11-14
+Release Date: 2011-11-15
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
