@@ -1,7 +1,7 @@
 #ifndef LSM303_h
 #define LSM303_h
 
-#include <WProgram.h> // for byte data type
+#include <Arduino.h> // for byte data type
 
 // device types
 

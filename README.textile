@@ -1,7 +1,7 @@
 h1. Arduino library for Pololu LSM303 boards
 
-Version: 1.2.0
-Release Date: 2011-11-15
+Version: 1.3.0
+Release Date: 2011-12-12
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
@@ -77,3 +77,8 @@ h2. Library Reference
 h3. Differences from the LSM303DLH library
 
 This library is very similar to our earlier "LSM303DLH":https://github.com/pololu/LSM303DLH library, which is not compatible with the LSM303DLM. Besides the name change, the main difference in this library is that you need to call the @init()@ function before using any of the other library functions, typically from within the Arduino @setup()@ function. While the older library only works with the Pololu boards' default accelerometer slave address of 0011000b, this library allows you to specify the slave address with the @init()@ function.
+
+h2. Version History
+
+* 1.3.0 (2011-12-12): Arduino 1.0 compatibility.
+* 1.2.0 (2011-11-15): Original release. (numbered to avoid confusion with our earlier "LSM303DLH library":https://github.com/pololu/LSM303DLH)
