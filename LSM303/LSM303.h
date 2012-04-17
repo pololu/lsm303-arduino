@@ -102,6 +102,14 @@ class LSM303
 		vector m; // magnetometer readings
 		vector m_max; // maximum magnetometer values, used for calibration
 		vector m_min; // minimum magnetometer values, used for calibration
+
+	    //HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
+	    //0x20 = 0b00100000   ±1.3     1055              950 (default)
+	    //0x40 = 0b01000000   ±1.9     795               710
+	    //0x60 = 0b01100000   ±2.5     635               570
+	    //0x80 = 0b10000000   ±4.0     430               385
+	    //0xE0 = 0b11100000   ±8.1     230               205
+		enum magGain { magGain_13 = 0x20, magGain_19 = 0x40, magGain_25 = 0x60, magGain_40 = 0x80, magGain_81 = 0xE0 };
 	
 		LSM303(void);
 		
@@ -113,6 +121,8 @@ class LSM303
 		byte readAccReg(byte reg);
 		void writeMagReg(byte reg, byte value);
 		byte readMagReg(int reg);
+
+		void setMagGain(magGain value);
 		
 		void readAcc(void);
 		void readMag(void);

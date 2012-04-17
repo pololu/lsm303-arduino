@@ -144,6 +144,14 @@ byte LSM303::readMagReg(int reg)
 	return value;
 }
 
+void LSM303::setMagGain(magGain value)
+{
+  Wire.beginTransmission(MAG_ADDRESS);
+  Wire.write(LSM303_CRB_REG_M);
+  Wire.write((byte) value);
+  Wire.endTransmission();
+}
+
 // Reads the 3 accelerometer channels and stores them in vector a
 void LSM303::readAcc(void)
 {
