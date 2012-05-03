@@ -21,9 +21,26 @@ LSM303::LSM303(void)
 	
 	_device = LSM303_DEVICE_AUTO;
 	acc_address = ACC_ADDRESS_SA0_A_LOW;
+
+	io_timeout = 0;  // 0 = no timeout
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
+
+bool LSM303::is_timeout()
+{
+	return (bool) did_timeout;
+}
+
+void LSM303::setTimeout(int timeout)
+{
+	io_timeout = timeout;
+}
+
+int LSM303::getTimeout()
+{
+	return io_timeout;
+}
 
 void LSM303::init(byte device, byte sa0_a)
 {	
@@ -82,7 +99,7 @@ void LSM303::writeAccReg(byte reg, byte value)
 	Wire.beginTransmission(acc_address);
 	Wire.write(reg);
 	Wire.write(value);
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 }
 
 // Reads an accelerometer register
@@ -92,7 +109,7 @@ byte LSM303::readAccReg(byte reg)
 	
 	Wire.beginTransmission(acc_address);
 	Wire.write(reg);
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 	Wire.requestFrom(acc_address, (byte)1);
 	value = Wire.read();
 	Wire.endTransmission();
@@ -106,7 +123,7 @@ void LSM303::writeMagReg(byte reg, byte value)
 	Wire.beginTransmission(MAG_ADDRESS);
 	Wire.write(reg);
 	Wire.write(value);
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 }
 
 // Reads a magnetometer register
@@ -136,7 +153,7 @@ byte LSM303::readMagReg(int reg)
 	
 	Wire.beginTransmission(MAG_ADDRESS);
 	Wire.write(reg);
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 	Wire.requestFrom(MAG_ADDRESS, 1);
 	value = Wire.read();
 	Wire.endTransmission();
@@ -147,14 +164,23 @@ byte LSM303::readMagReg(int reg)
 // Reads the 3 accelerometer channels and stores them in vector a
 void LSM303::readAcc(void)
 {
+	unsigned long millis_start;
+
 	Wire.beginTransmission(acc_address);
 	// assert the MSB of the address to get the accelerometer 
 	// to do slave-transmit subaddress updating.
 	Wire.write(LSM303_OUT_X_L_A | (1 << 7)); 
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 	Wire.requestFrom(acc_address, (byte)6);
 
-	while (Wire.available() < 6);
+	millis_start = millis();
+	did_timeout = 0;
+	while (Wire.available() < 6) {
+		if (io_timeout > 0 && (millis() - millis_start) > io_timeout) {
+			did_timeout = 1;
+			return;
+		}
+	}
 	
 	byte xla = Wire.read();
 	byte xha = Wire.read();
@@ -171,12 +197,21 @@ void LSM303::readAcc(void)
 // Reads the 3 magnetometer channels and stores them in vector m
 void LSM303::readMag(void)
 {
+	unsigned long millis_start;
+
 	Wire.beginTransmission(MAG_ADDRESS);
 	Wire.write(LSM303_OUT_X_H_M);
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 	Wire.requestFrom(MAG_ADDRESS, 6);
 
-	while (Wire.available() < 6);
+	millis_start = millis();
+	did_timeout = 0;
+	while (Wire.available() < 6) {
+		if (io_timeout > 0 && (millis() - millis_start) > io_timeout) {
+			did_timeout = 1;
+			return;
+		}
+	}
 
 	byte xhm = Wire.read();
 	byte xlm = Wire.read();
@@ -282,7 +317,7 @@ byte LSM303::detectSA0_A(void)
 {
 	Wire.beginTransmission(ACC_ADDRESS_SA0_A_LOW);
 	Wire.write(LSM303_CTRL_REG1_A);
-	Wire.endTransmission();
+	last_status = Wire.endTransmission();
 	Wire.requestFrom(ACC_ADDRESS_SA0_A_LOW, 1);
 	if (Wire.available())
 	{
