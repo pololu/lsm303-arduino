@@ -102,6 +102,8 @@ class LSM303
 		vector m; // magnetometer readings
 		vector m_max; // maximum magnetometer values, used for calibration
 		vector m_min; // minimum magnetometer values, used for calibration
+		int timeout_ms; // maximum milliseconds that may elapse for I/O requests
+		int last_status;
 	
 		LSM303(void);
 		
@@ -117,6 +119,10 @@ class LSM303
 		void readAcc(void);
 		void readMag(void);
 		void read(void);
+
+		void setTimeout(int);
+		int getTimeout();
+		bool is_timeout(void);
 		
 		int heading(void);
 		int heading(vector from);
@@ -129,6 +135,8 @@ class LSM303
 	private:
 		byte _device; // chip type (DLH, DLM, or DLHC)
 		byte acc_address;
+		int io_timeout;
+		int did_timeout;
 		
 		byte detectSA0_A(void);
 };
