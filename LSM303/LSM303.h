@@ -97,12 +97,15 @@ class LSM303
 		{
 			float x, y, z;
 		} vector;
-		
+
 		vector a; // accelerometer readings
 		vector m; // magnetometer readings
 		vector m_max; // maximum magnetometer values, used for calibration
 		vector m_min; // minimum magnetometer values, used for calibration
 
+		int timeout_ms; // maximum milliseconds that may elapse for I/O requests
+		int last_status;
+		
 		// HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
 		//                               DLH (DLM/DLHC)    DLH (DLM/DLHC)
 		// 0x20 = 0b00100000   ±1.3     1055 (1100)        950 (980) (default)
@@ -114,7 +117,7 @@ class LSM303
 		// 0xE0 = 0b11100000   ±8.1      230  (230)        205 (205)
 		enum magGain { magGain_13 = 0x20, magGain_19 = 0x40, magGain_25 = 0x60, magGain_40 = 0x80,
 		               magGain_47 = 0xA0, magGain_56 = 0xC0, magGain_81 = 0xE0 };
-	
+
 		LSM303(void);
 		
 		void init(byte device = LSM303_DEVICE_AUTO, byte sa0_a = LSM303_SA0_A_AUTO);
@@ -131,6 +134,10 @@ class LSM303
 		void readAcc(void);
 		void readMag(void);
 		void read(void);
+
+		void setTimeout(int);
+		int getTimeout();
+		bool is_timeout(void);
 		
 		int heading(void);
 		int heading(vector from);
@@ -143,6 +150,8 @@ class LSM303
 	private:
 		byte _device; // chip type (DLH, DLM, or DLHC)
 		byte acc_address;
+		int io_timeout;
+		int did_timeout;
 		
 		byte detectSA0_A(void);
 };
