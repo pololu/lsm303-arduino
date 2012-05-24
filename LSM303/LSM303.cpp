@@ -27,7 +27,7 @@ LSM303::LSM303(void)
 
 // Public Methods //////////////////////////////////////////////////////////////
 
-bool LSM303::is_timeout()
+bool LSM303::timeoutOccurred()
 {
 	return (bool) did_timeout;
 }

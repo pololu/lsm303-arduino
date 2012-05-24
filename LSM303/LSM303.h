@@ -103,7 +103,6 @@ class LSM303
 		vector m_max; // maximum magnetometer values, used for calibration
 		vector m_min; // minimum magnetometer values, used for calibration
 
-		int timeout_ms; // maximum milliseconds that may elapse for I/O requests
 		int last_status;
 		
 		// HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
@@ -137,7 +136,7 @@ class LSM303
 
 		void setTimeout(int);
 		int getTimeout();
-		bool is_timeout(void);
+		bool timeoutOccurred(void);
 		
 		int heading(void);
 		int heading(vector from);
