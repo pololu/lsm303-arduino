@@ -103,7 +103,7 @@ class LSM303
 		vector m_max; // maximum magnetometer values, used for calibration
 		vector m_min; // minimum magnetometer values, used for calibration
 
-		int last_status;
+		byte last_status; // status of last I2C transmission
 		
 		// HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
 		//                               DLH (DLM/DLHC)    DLH (DLM/DLHC)
@@ -150,7 +150,7 @@ class LSM303
 		byte _device; // chip type (DLH, DLM, or DLHC)
 		byte acc_address;
 		int io_timeout;
-		int did_timeout;
+		bool did_timeout;
 		
 		byte detectSA0_A(void);
 };

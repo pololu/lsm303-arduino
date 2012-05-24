@@ -23,13 +23,14 @@ LSM303::LSM303(void)
 	acc_address = ACC_ADDRESS_SA0_A_LOW;
 
 	io_timeout = 0;  // 0 = no timeout
+	did_timeout = false;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
 
 bool LSM303::timeoutOccurred()
 {
-	return (bool) did_timeout;
+	return did_timeout;
 }
 
 void LSM303::setTimeout(int timeout)
@@ -182,10 +183,10 @@ void LSM303::readAcc(void)
 	Wire.requestFrom(acc_address, (byte)6);
 
 	millis_start = millis();
-	did_timeout = 0;
+	did_timeout = false;
 	while (Wire.available() < 6) {
 		if (io_timeout > 0 && (millis() - millis_start) > io_timeout) {
-			did_timeout = 1;
+			did_timeout = true;
 			return;
 		}
 	}
@@ -213,10 +214,10 @@ void LSM303::readMag(void)
 	Wire.requestFrom(MAG_ADDRESS, 6);
 
 	millis_start = millis();
-	did_timeout = 0;
+	did_timeout = false;
 	while (Wire.available() < 6) {
 		if (io_timeout > 0 && (millis() - millis_start) > io_timeout) {
-			did_timeout = 1;
+			did_timeout = true;
 			return;
 		}
 	}
