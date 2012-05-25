@@ -33,12 +33,12 @@ bool LSM303::timeoutOccurred()
 	return did_timeout;
 }
 
-void LSM303::setTimeout(int timeout)
+void LSM303::setTimeout(unsigned int timeout)
 {
 	io_timeout = timeout;
 }
 
-int LSM303::getTimeout()
+unsigned int LSM303::getTimeout()
 {
 	return io_timeout;
 }
@@ -173,8 +173,6 @@ void LSM303::setMagGain(magGain value)
 // Reads the 3 accelerometer channels and stores them in vector a
 void LSM303::readAcc(void)
 {
-	unsigned long millis_start;
-
 	Wire.beginTransmission(acc_address);
 	// assert the MSB of the address to get the accelerometer 
 	// to do slave-transmit subaddress updating.
@@ -182,10 +180,10 @@ void LSM303::readAcc(void)
 	last_status = Wire.endTransmission();
 	Wire.requestFrom(acc_address, (byte)6);
 
-	millis_start = millis();
+	unsigned int millis_start = millis();
 	did_timeout = false;
 	while (Wire.available() < 6) {
-		if (io_timeout > 0 && (millis() - millis_start) > io_timeout) {
+		if (io_timeout > 0 && ((unsigned int)millis() - millis_start) > io_timeout) {
 			did_timeout = true;
 			return;
 		}
@@ -206,17 +204,15 @@ void LSM303::readAcc(void)
 // Reads the 3 magnetometer channels and stores them in vector m
 void LSM303::readMag(void)
 {
-	unsigned long millis_start;
-
 	Wire.beginTransmission(MAG_ADDRESS);
 	Wire.write(LSM303_OUT_X_H_M);
 	last_status = Wire.endTransmission();
 	Wire.requestFrom(MAG_ADDRESS, 6);
 
-	millis_start = millis();
+	unsigned int millis_start = millis();
 	did_timeout = false;
 	while (Wire.available() < 6) {
-		if (io_timeout > 0 && (millis() - millis_start) > io_timeout) {
+		if (io_timeout > 0 && ((unsigned int)millis() - millis_start) > io_timeout) {
 			did_timeout = true;
 			return;
 		}

@@ -149,7 +149,7 @@ class LSM303
 	private:
 		byte _device; // chip type (DLH, DLM, or DLHC)
 		byte acc_address;
-		int io_timeout;
+		unsigned int io_timeout;
 		bool did_timeout;
 		
 		byte detectSA0_A(void);
