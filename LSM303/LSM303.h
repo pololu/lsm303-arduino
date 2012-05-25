@@ -134,8 +134,8 @@ class LSM303
 		void readMag(void);
 		void read(void);
 
-		void setTimeout(int);
-		int getTimeout();
+		void setTimeout(unsigned int timeout);
+		unsigned int getTimeout(void);
 		bool timeoutOccurred(void);
 		
 		int heading(void);
