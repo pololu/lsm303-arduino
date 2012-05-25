@@ -1,12 +1,12 @@
 h1. Arduino library for Pololu LSM303 boards
 
-Version: 1.3.0
-Release Date: 2011-12-12
+Version: 1.4.0
+Release Date: 2012-05-24
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
 
-This is a library for the "Arduino":http://pololu.com/catalog/product/1616 that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250 and "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265 (it also works with the older "MinIMU-9 L3G4200D and LSM303DLH carrier":http://www.pololu.com/catalog/product/1264). It makes it simple to read the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading for those looking to use this sensor as a tilt-compensated compass.
+This is a library for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with the Pololu "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250 and "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265 (it also works with the older "MinIMU-9 L3G4200D and LSM303DLH carrier":http://www.pololu.com/catalog/product/1264). It makes it simple to read the raw accelerometer and magnetometer data, and it has a function for computing the tilt-compensated heading for those looking to use this sensor as a tilt-compensated compass.
 
 h2. Getting Started
 
@@ -60,6 +60,7 @@ h2. Library Reference
 - @vector m@ := The last values read from the magnetometer.
 - @vector m_min@ := Lower bounds (minimum values) for the magnetometer readings on each axis; set this appropriately to calibrate @heading()@.
 - @vector m_max@ := Upper bounds (maximum values) for the magnetometer readings on each axis; set this appropriately to calibrate @heading()@.
+- @byte last_status@ := The status of the last I2C transmission. See the "@Wire.endTransmission()@ documentation":http://arduino.cc/en/Reference/WireEndTransmission for return values.
 - @magGain magGain_?@ := Enum of values available as gain settings for the magnetometer.
 
 - @LSM303(void)@ := Constructor; initializes @m_min@ and @m_max@ with placeholder values.
@@ -73,6 +74,9 @@ h2. Library Reference
 - @void readAcc(void)@ := Takes a reading from the accelerometer and stores the values in the vector @a@.
 - @void readMag(void)@ := Takes a reading from the magnetometer and stores the values in the vector @m@.
 - @void read(void)@ := Takes a reading from both the accelerometer and magnetometer and stores the values in the vectors @a@ and @m@.
+- @void setTimeout(unsigned int timeout)@ := Sets a timeout period for @readAcc()@ and @readMag()@, in milliseconds, after which they will abort if no data is received. A value of 0 disables the timeout.
+- @unsigned int getTimeout(void)@ := Returns the current timeout period setting.
+- @bool timeoutOccurred(void)@ := Returns a boolean indicating whether the last call to @readAcc()@ or @readMag()@ timed out.
 - @int heading(void)@ := Returns the tilt-compensated heading in degrees headed away from the negative Y axis.
 - @int heading(vector from)@ := Returns the tilt-compensated heading in degrees headed away from the from vector.
 
@@ -82,5 +86,6 @@ This library is very similar to our earlier "LSM303DLH":https://github.com/polol
 
 h2. Version History
 
+* 1.4.0 (2012-05-24): Added magnetometer gain functions and reading timeout feature; thanks to Joshua Hogendorn and Eric Brundick for these contributions. Added keywords.txt and changed file extensions of examples to .ino.
 * 1.3.0 (2011-12-12): Arduino 1.0 compatibility.
 * 1.2.0 (2011-11-15): Original release. (numbered to avoid confusion with our earlier "LSM303DLH library":https://github.com/pololu/LSM303DLH)
