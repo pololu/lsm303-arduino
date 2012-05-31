@@ -29,8 +29,8 @@ pre. Arduino Uno/Duemilanove     LSM303 Carrier
 pre. Arduino Mega                LSM303 Carrier
                     5V  ->  VIN
                    GND  ->  GND
-         Analog Pin 21  ->  SCL
-         Analog Pin 20  ->  SDA
+        Digital Pin 21  ->  SCL
+        Digital Pin 20  ->  SDA
 
 h2. Example Programs
 
