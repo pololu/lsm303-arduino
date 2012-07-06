@@ -120,6 +120,7 @@ class LSM303
 		LSM303(void);
 		
 		void init(byte device = LSM303_DEVICE_AUTO, byte sa0_a = LSM303_SA0_A_AUTO);
+		byte getDeviceType(void) { return _device; }
 		
 		void enableDefault(void);
 		
