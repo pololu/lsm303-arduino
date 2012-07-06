@@ -92,68 +92,68 @@
 
 class LSM303
 {
-	public:
-		typedef struct vector
-		{
-			float x, y, z;
-		} vector;
+  public:
+    typedef struct vector
+    {
+      float x, y, z;
+    } vector;
 
-		vector a; // accelerometer readings
-		vector m; // magnetometer readings
-		vector m_max; // maximum magnetometer values, used for calibration
-		vector m_min; // minimum magnetometer values, used for calibration
+    vector a; // accelerometer readings
+    vector m; // magnetometer readings
+    vector m_max; // maximum magnetometer values, used for calibration
+    vector m_min; // minimum magnetometer values, used for calibration
 
-		byte last_status; // status of last I2C transmission
-		
-		// HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
-		//                               DLH (DLM/DLHC)    DLH (DLM/DLHC)
-		// 0x20 = 0b00100000   ±1.3     1055 (1100)        950 (980) (default)
-		// 0x40 = 0b01000000   ±1.9      795  (855)        710 (760)
-		// 0x60 = 0b01100000   ±2.5      635  (670)        570 (600)
-		// 0x80 = 0b10000000   ±4.0      430  (450)        385 (400)
-		// 0xA0 = 0b10100000   ±4.7      375  (400)        335 (355)
-		// 0xC0 = 0b11000000   ±5.6      320  (330)        285 (295)
-		// 0xE0 = 0b11100000   ±8.1      230  (230)        205 (205)
-		enum magGain { magGain_13 = 0x20, magGain_19 = 0x40, magGain_25 = 0x60, magGain_40 = 0x80,
-		               magGain_47 = 0xA0, magGain_56 = 0xC0, magGain_81 = 0xE0 };
+    byte last_status; // status of last I2C transmission
+    
+    // HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
+    //                               DLH (DLM/DLHC)    DLH (DLM/DLHC)
+    // 0x20 = 0b00100000   ±1.3     1055 (1100)        950 (980) (default)
+    // 0x40 = 0b01000000   ±1.9      795  (855)        710 (760)
+    // 0x60 = 0b01100000   ±2.5      635  (670)        570 (600)
+    // 0x80 = 0b10000000   ±4.0      430  (450)        385 (400)
+    // 0xA0 = 0b10100000   ±4.7      375  (400)        335 (355)
+    // 0xC0 = 0b11000000   ±5.6      320  (330)        285 (295)
+    // 0xE0 = 0b11100000   ±8.1      230  (230)        205 (205)
+    enum magGain { magGain_13 = 0x20, magGain_19 = 0x40, magGain_25 = 0x60, magGain_40 = 0x80,
+                   magGain_47 = 0xA0, magGain_56 = 0xC0, magGain_81 = 0xE0 };
 
-		LSM303(void);
-		
-		void init(byte device = LSM303_DEVICE_AUTO, byte sa0_a = LSM303_SA0_A_AUTO);
-		byte getDeviceType(void) { return _device; }
-		
-		void enableDefault(void);
-		
-		void writeAccReg(byte reg, byte value);
-		byte readAccReg(byte reg);
-		void writeMagReg(byte reg, byte value);
-		byte readMagReg(int reg);
+    LSM303(void);
+    
+    void init(byte device = LSM303_DEVICE_AUTO, byte sa0_a = LSM303_SA0_A_AUTO);
+    byte getDeviceType(void) { return _device; }
+    
+    void enableDefault(void);
+    
+    void writeAccReg(byte reg, byte value);
+    byte readAccReg(byte reg);
+    void writeMagReg(byte reg, byte value);
+    byte readMagReg(int reg);
 
-		void setMagGain(magGain value);
-		
-		void readAcc(void);
-		void readMag(void);
-		void read(void);
+    void setMagGain(magGain value);
+    
+    void readAcc(void);
+    void readMag(void);
+    void read(void);
 
-		void setTimeout(unsigned int timeout);
-		unsigned int getTimeout(void);
-		bool timeoutOccurred(void);
-		
-		int heading(void);
-		int heading(vector from);
-		
-		// vector functions
-		static void vector_cross(const vector *a, const vector *b, vector *out);
-		static float vector_dot(const vector *a,const vector *b);
-		static void vector_normalize(vector *a);
-		
-	private:
-		byte _device; // chip type (DLH, DLM, or DLHC)
-		byte acc_address;
-		unsigned int io_timeout;
-		bool did_timeout;
-		
-		byte detectSA0_A(void);
+    void setTimeout(unsigned int timeout);
+    unsigned int getTimeout(void);
+    bool timeoutOccurred(void);
+    
+    int heading(void);
+    int heading(vector from);
+    
+    // vector functions
+    static void vector_cross(const vector *a, const vector *b, vector *out);
+    static float vector_dot(const vector *a,const vector *b);
+    static void vector_normalize(vector *a);
+    
+  private:
+    byte _device; // chip type (DLH, DLM, or DLHC)
+    byte acc_address;
+    unsigned int io_timeout;
+    bool did_timeout;
+    
+    byte detectSA0_A(void);
 };
 
 #endif
