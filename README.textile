@@ -10,6 +10,7 @@ This is a library for the "Arduino":http://pololu.com/catalog/product/2191 that 
 
 This is a library for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with LSM303DLH, LSM303DLM, and LSM303DLHC compasses and accelerometers on Pololu boards. It makes it simple to read the raw accelerometer and magnetometer data from these boards:
 
+* "LSM303DLHC 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/2124
 * "LSM303DLM 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1273
 * "MinIMU-9 v2 L3GD20 and LSM303DLHC carrier":http://www.pololu.com/catalog/product/1268
 * "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265
