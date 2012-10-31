@@ -196,9 +196,12 @@ void LSM303::readAcc(void)
   byte zla = Wire.read();
   byte zha = Wire.read();
 
-  a.x = (xha << 8 | xla) >> 4;
-  a.y = (yha << 8 | yla) >> 4;
-  a.z = (zha << 8 | zla) >> 4;
+  // combine high and low bytes, then shift right to discard lowest 4 bits (which are meaningless)
+  // GCC performs an arithmetic right shift for signed negative numbers, but this code will not work
+  // if you port it to a compiler that does a logical right shift instead.
+  a.x = ((int16_t)(xha << 8 | xla)) >> 4;
+  a.y = ((int16_t)(yha << 8 | yla)) >> 4;
+  a.z = ((int16_t)(zha << 8 | zla)) >> 4;
 }
 
 // Reads the 3 magnetometer channels and stores them in vector m
@@ -241,9 +244,10 @@ void LSM303::readMag(void)
 
   }
 
-  m.x = (xhm << 8 | xlm);
-  m.y = (yhm << 8 | ylm);
-  m.z = (zhm << 8 | zlm);
+  // combine high and low bytes
+  m.x = (int16_t)(xhm << 8 | xlm);
+  m.y = (int16_t)(yhm << 8 | ylm);
+  m.z = (int16_t)(zhm << 8 | zlm);
 }
 
 // Reads all 6 channels of the LSM303 and stores them in the object variables
