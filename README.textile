@@ -1,7 +1,7 @@
 h1. Arduino library for Pololu LSM303 boards
 
-Version: 1.4.1
-Release Date: 2012-07-06
+Version: 1.4.2
+Release Date: 2012-10-31
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
@@ -11,8 +11,8 @@ This is a library for the "Arduino":http://pololu.com/catalog/product/2191 that 
 * "LSM303DLHC 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/2124
 * "LSM303DLM 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1273
 * "MinIMU-9 v2 L3GD20 and LSM303DLHC carrier":http://www.pololu.com/catalog/product/1268
-* "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265
 * "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250 (discontinued)
+* "MinIMU-9 L3G4200D and LSM303DLM carrier":http://www.pololu.com/catalog/product/1265 (discontinued)
 * "MinIMU-9 L3G4200D and LSM303DLH carrier":http://www.pololu.com/catalog/product/1264 (discontinued)
 
 The library also includes a function for computing the tilt-compensated heading for those looking to use the LSM303 as a tilt-compensated compass.
@@ -94,6 +94,7 @@ This library is very similar to our earlier "LSM303DLH":https://github.com/polol
 
 h2. Version History
 
+* 1.4.2 (2012-10-31): Cast sensor readings to 16-bit ints for better portability.
 * 1.4.1 (2012-07-06): Added @getDeviceType()@ function for programs that need to autodetect devices and distinguish between them.
 * 1.4.0 (2012-05-24): Added magnetometer gain functions and reading timeout feature; thanks to Joshua Hogendorn and Eric Brundick for these contributions. Added keywords.txt and changed file extensions of examples to .ino.
 * 1.3.0 (2011-12-12): Arduino 1.0 compatibility.
