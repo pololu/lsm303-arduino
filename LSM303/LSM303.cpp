@@ -4,7 +4,7 @@
 
 // Defines ////////////////////////////////////////////////////////////////
 
-// The Arduino two-wire interface uses a 7-bit number for the address, 
+// The Arduino two-wire interface uses a 7-bit number for the address,
 // and sets the last bit correctly based on reads and writes
 #define MAG_ADDRESS            (0x3C >> 1)
 #define ACC_ADDRESS_SA0_A_LOW  (0x30 >> 1)
@@ -18,7 +18,7 @@ LSM303::LSM303(void)
   // a calibration be done for your particular unit.
   m_max.x = +540; m_max.y = +500; m_max.z = 180;
   m_min.x = -520; m_min.y = -570; m_min.z = -770;
-  
+
   _device = LSM303_DEVICE_AUTO;
   acc_address = ACC_ADDRESS_SA0_A_LOW;
 
@@ -44,7 +44,7 @@ unsigned int LSM303::getTimeout()
 }
 
 void LSM303::init(byte device, byte sa0_a)
-{  
+{
   _device = device;
   switch (_device)
   {
@@ -56,12 +56,12 @@ void LSM303::init(byte device, byte sa0_a)
         acc_address = ACC_ADDRESS_SA0_A_HIGH;
       else
         acc_address = (detectSA0_A() == LSM303_SA0_A_HIGH) ? ACC_ADDRESS_SA0_A_HIGH : ACC_ADDRESS_SA0_A_LOW;
-      break;  
-    
+      break;
+
     case LSM303DLHC_DEVICE:
       acc_address = ACC_ADDRESS_SA0_A_HIGH;
       break;
-      
+
     default:
       // try to auto-detect device
       if (detectSA0_A() == LSM303_SA0_A_HIGH)
@@ -87,7 +87,10 @@ void LSM303::enableDefault(void)
   // 0x27 = 0b00100111
   // Normal power mode, all axes enabled
   writeAccReg(LSM303_CTRL_REG1_A, 0x27);
-  
+
+  if (_device == LSM303DLHC_DEVICE)
+    writeAccReg(LSM303_CTRL_REG4_A, 0x08); // DLHC: enable high resolution mode
+
   // Enable Magnetometer
   // 0x00 = 0b00000000
   // Continuous conversion mode
@@ -107,14 +110,14 @@ void LSM303::writeAccReg(byte reg, byte value)
 byte LSM303::readAccReg(byte reg)
 {
   byte value;
-  
+
   Wire.beginTransmission(acc_address);
   Wire.write(reg);
   last_status = Wire.endTransmission();
   Wire.requestFrom(acc_address, (byte)1);
   value = Wire.read();
   Wire.endTransmission();
-  
+
   return value;
 }
 
@@ -131,7 +134,7 @@ void LSM303::writeMagReg(byte reg, byte value)
 byte LSM303::readMagReg(int reg)
 {
   byte value;
-  
+
   // if dummy register address (magnetometer Y/Z), use device type to determine actual address
   if (reg < 0)
   {
@@ -151,14 +154,14 @@ byte LSM303::readMagReg(int reg)
         break;
     }
   }
-  
+
   Wire.beginTransmission(MAG_ADDRESS);
   Wire.write(reg);
   last_status = Wire.endTransmission();
   Wire.requestFrom(MAG_ADDRESS, 1);
   value = Wire.read();
   Wire.endTransmission();
-  
+
   return value;
 }
 
@@ -174,9 +177,9 @@ void LSM303::setMagGain(magGain value)
 void LSM303::readAcc(void)
 {
   Wire.beginTransmission(acc_address);
-  // assert the MSB of the address to get the accelerometer 
+  // assert the MSB of the address to get the accelerometer
   // to do slave-transmit subaddress updating.
-  Wire.write(LSM303_OUT_X_L_A | (1 << 7)); 
+  Wire.write(LSM303_OUT_X_L_A | (1 << 7));
   last_status = Wire.endTransmission();
   Wire.requestFrom(acc_address, (byte)6);
 
@@ -188,7 +191,7 @@ void LSM303::readAcc(void)
       return;
     }
   }
-  
+
   byte xla = Wire.read();
   byte xha = Wire.read();
   byte yla = Wire.read();
@@ -223,9 +226,9 @@ void LSM303::readMag(void)
 
   byte xhm = Wire.read();
   byte xlm = Wire.read();
-  
+
   byte yhm, ylm, zhm, zlm;
-  
+
   if (_device == LSM303DLH_DEVICE)
   {
     // DLH: register address for Y comes before Z
@@ -266,8 +269,8 @@ int LSM303::heading(void)
 
 // Returns the number of degrees from the From vector projected into
 // the horizontal plane is away from north.
-// 
-// Description of heading algorithm: 
+//
+// Description of heading algorithm:
 // Shift and scale the magnetic reading based on calibration data to
 // to find the North vector. Use the acceleration readings to
 // determine the Down vector. The cross product of North and Down
@@ -293,7 +296,7 @@ int LSM303::heading(vector from)
     vector_cross(&m, &temp_a, &E);
     vector_normalize(&E);
     vector_cross(&temp_a, &E, &N);
-  
+
     // compute heading
     int heading = round(atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / M_PI);
     if (heading < 0) heading += 360;
