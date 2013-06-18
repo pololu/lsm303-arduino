@@ -260,6 +260,29 @@ void LSM303::read(void)
   readMag();
 }
 
+int LSM303::pitch(void)
+{
+  vector temp_a = a;
+    // normalize
+  vector_normalize(&temp_a);
+    //vector_normalize(&m);
+  int pitch = round(atan2(temp_a.y,((temp_a.z > 0) - (temp_a.z < 0))*sqrt(pow(temp_a.x,2.0)+pow(temp_a.z,2.0)))* 180 / M_PI);
+  if (pitch < 0) pitch += 360;
+  return pitch;
+}
+
+int LSM303::roll(void)
+{
+  vector temp_a = a;
+    // normalize
+  vector_normalize(&temp_a);
+    //vector_normalize(&m);
+  int roll = round(atan2(-1*temp_a.x,temp_a.z)* 180 / M_PI);
+  if (roll < 0) roll += 360;
+  return roll;
+  
+}
+
 // Returns the number of degrees from the -Y axis that it
 // is pointing.
 int LSM303::heading(void)

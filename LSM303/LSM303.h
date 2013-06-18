@@ -140,6 +140,8 @@ class LSM303
     bool timeoutOccurred(void);
     
     int heading(void);
+	int pitch(void);
+	int roll(void);
     int heading(vector from);
     
     // vector functions
@@ -157,6 +159,3 @@ class LSM303
 };
 
 #endif
-
-
-
