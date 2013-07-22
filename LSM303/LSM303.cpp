@@ -267,8 +267,8 @@ int LSM303::heading(void)
   return heading((vector){0,-1,0});
 }
 
-// Returns the number of degrees from the From vector projected into
-// the horizontal plane is away from north.
+// Returns the angular difference in the horizontal plane between the
+// From vector and North, in degrees.
 //
 // Description of heading algorithm:
 // Shift and scale the magnetic reading based on calibration data to

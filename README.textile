@@ -87,8 +87,8 @@ h2. Library Reference
 - @void setTimeout(unsigned int timeout)@ := Sets a timeout period for @readAcc()@ and @readMag()@, in milliseconds, after which they will abort if no data is received. A value of 0 disables the timeout.
 - @unsigned int getTimeout(void)@ := Returns the current timeout period setting.
 - @bool timeoutOccurred(void)@ := Returns a boolean indicating whether the last call to @readAcc()@ or @readMag()@ timed out.
-- @int heading(void)@ := Returns the tilt-compensated heading in degrees headed away from the negative Y axis.
-- @int heading(vector from)@ := Returns the tilt-compensated heading in degrees headed away from the from vector.
+- @int heading(void)@ := Returns the tilt-compensated heading of the negative Y axis in degrees (the angular difference in the horizontal plane between -Y and north).
+- @int heading(vector from)@ := Returns the tilt-compensated heading of the given vector in degrees (the angular difference in the horizontal plane between from and north).
 
 h3. Differences from the LSM303DLH library
 
