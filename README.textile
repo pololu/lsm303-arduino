@@ -1,7 +1,7 @@
 h1. Arduino library for Pololu LSM303 boards
 
-Version: 1.4.3
-Release Date: 2013-03-15
+Version: 1.4.4
+Release Date: 2013-07-22
 "www.pololu.com":http://www.pololu.com/
 
 h2. Summary
@@ -96,6 +96,7 @@ This library is very similar to our earlier "LSM303DLH":https://github.com/polol
 
 h2. Version History
 
+* 1.4.4 (2013-07-22): Corrected comments explaining @heading()@ function.
 * 1.4.3 (2013-03-15): Enable high resolution mode for LSM303DLHC accelerometer in @enableDefault()@.
 * 1.4.2 (2012-10-31): Cast sensor readings to 16-bit ints for better portability.
 * 1.4.1 (2012-07-06): Added @getDeviceType()@ function for programs that need to autodetect devices and distinguish between them.
