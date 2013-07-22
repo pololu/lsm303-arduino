@@ -273,11 +273,11 @@ int LSM303::heading(void)
 // Description of heading algorithm:
 // Shift and scale the magnetic reading based on calibration data to
 // to find the North vector. Use the acceleration readings to
-// determine the Down vector. The cross product of North and Down
-// vectors is East. The vectors East and North form a basis for the
-// horizontal plane. The From vector is projected into the horizontal
-// plane and the angle between the projected vector and north is
-// returned.
+// determine the Up vector (gravity is measured as an upward
+// acceleration). The cross product of North and Up vectors is East.
+// The vectors East and North form a basis for the horizontal plane.
+// The From vector is projected into the horizontal plane and the
+// angle between the projected vector and north is returned.
 int LSM303::heading(vector from)
 {
     // shift and scale
