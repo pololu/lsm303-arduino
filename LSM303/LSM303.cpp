@@ -263,22 +263,24 @@ void LSM303::read(void)
 int LSM303::pitch(void)
 {
   vector temp_a = a;
-    // normalize
+  // normalize
   vector_normalize(&temp_a);
-    //vector_normalize(&m);
+  //vector_normalize(&m);
   int pitch = round(atan2(temp_a.y,((temp_a.z > 0) - (temp_a.z < 0))*sqrt(pow(temp_a.x,2.0)+pow(temp_a.z,2.0)))* 180 / M_PI);
   if (pitch < 0) pitch += 360;
+  pitch = 360 - pitch;
   return pitch;
 }
 
 int LSM303::roll(void)
 {
   vector temp_a = a;
-    // normalize
+  // normalize
   vector_normalize(&temp_a);
-    //vector_normalize(&m);
+  //vector_normalize(&m);
   int roll = round(atan2(-1*temp_a.x,temp_a.z)* 180 / M_PI);
   if (roll < 0) roll += 360;
+  roll = 360 - roll;
   return roll;
   
 }
