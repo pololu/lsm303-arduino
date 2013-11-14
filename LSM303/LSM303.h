@@ -165,15 +165,15 @@
 class LSM303
 {
   public:
-    typedef struct vector
+    template <typename T> struct vector
     {
-      float x, y, z;
-    } vector;
+      T x, y, z;
+    };
 
-    vector a; // accelerometer readings
-    vector m; // magnetometer readings
-    vector m_max; // maximum magnetometer values, used for calibration
-    vector m_min; // minimum magnetometer values, used for calibration
+    vector<int16_t> a; // accelerometer readings
+    vector<int16_t> m; // magnetometer readings
+    vector<int16_t> m_max; // maximum magnetometer values, used for calibration
+    vector<int16_t> m_min; // minimum magnetometer values, used for calibration
 
     byte last_status; // status of last I2C transmission
     
@@ -212,12 +212,13 @@ class LSM303
     bool timeoutOccurred(void);
     
     int heading(void);
-    int heading(vector from);
+    template <typename T> float heading(vector<T> from);
     
     // vector functions
-    static void vector_cross(const vector *a, const vector *b, vector *out);
-    static float vector_dot(const vector *a,const vector *b);
-    static void vector_normalize(vector *a);
+    
+    template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
+    template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
+    static void vector_normalize(vector<float> *a);
     
   private:
     byte _device; // chip type (DLH, DLM, or DLHC)

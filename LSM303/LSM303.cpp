@@ -258,12 +258,20 @@ void LSM303::readAcc(void)
   byte zla = Wire.read();
   byte zha = Wire.read();
 
+  a.x = (int16_t)(xha << 8 | xla);
+  a.y = (int16_t)(yha << 8 | yla);
+  a.z = (int16_t)(zha << 8 | zla);
+  
+  // LSM303D has 16-bit accelerometer outputs. For all others, 
   // combine high and low bytes, then shift right to discard lowest 4 bits (which are meaningless)
   // GCC performs an arithmetic right shift for signed negative numbers, but this code will not work
   // if you port it to a compiler that does a logical right shift instead.
-  a.x = ((int16_t)(xha << 8 | xla)) >> 4;
-  a.y = ((int16_t)(yha << 8 | yla)) >> 4;
-  a.z = ((int16_t)(zha << 8 | zla)) >> 4;
+  if (_device != LSM303D_DEVICE)
+  {
+    a.x <<= 4;
+    a.y <<= 4;
+    a.z <<= 4;
+  }
 }
 
 // Reads the 3 magnetometer channels and stores them in vector m
@@ -336,7 +344,7 @@ void LSM303::read(void)
 // is pointing.
 int LSM303::heading(void)
 {
-  return heading((vector){0,-1,0});
+  return heading((vector<int>){0,-1,0});
 }
 
 // Returns the angular difference in the horizontal plane between the
@@ -350,46 +358,44 @@ int LSM303::heading(void)
 // The vectors East and North form a basis for the horizontal plane.
 // The From vector is projected into the horizontal plane and the
 // angle between the projected vector and north is returned.
-int LSM303::heading(vector from)
+template <typename T> float LSM303::heading(vector<T> from)
 {
-    // shift and scale
-    m.x = (m.x - m_min.x) / (m_max.x - m_min.x) * 2 - 1.0;
-    m.y = (m.y - m_min.y) / (m_max.y - m_min.y) * 2 - 1.0;
-    m.z = (m.z - m_min.z) / (m_max.z - m_min.z) * 2 - 1.0;
-
-    vector temp_a = a;
-    // normalize
-    vector_normalize(&temp_a);
-    //vector_normalize(&m);
-
+    vector<int32_t> temp_m = {m.x, m.y, m.z};
+    
+    // subtract offset (average of min and max) from magnetometer readings
+    temp_m.x -= ((int32_t)m_min.x + m_max.x) / 2;
+    temp_m.y -= ((int32_t)m_min.y + m_max.y) / 2;
+    temp_m.z -= ((int32_t)m_min.z + m_max.z) / 2;
+  
     // compute E and N
-    vector E;
-    vector N;
-    vector_cross(&m, &temp_a, &E);
+    vector<float> E;
+    vector<float> N;
+    vector_cross(&temp_m, &a, &E);
     vector_normalize(&E);
-    vector_cross(&temp_a, &E, &N);
+    vector_cross(&a, &E, &N);
+    vector_normalize(&N);
 
     // compute heading
-    int heading = round(atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / M_PI);
+    float heading = atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / M_PI;
     if (heading < 0) heading += 360;
   return heading;
 }
 
-void LSM303::vector_cross(const vector *a,const vector *b, vector *out)
+template <typename Ta, typename Tb, typename To> void LSM303::vector_cross(const vector<Ta> *a,const vector<Tb> *b, vector<To> *out)
 {
-  out->x = a->y*b->z - a->z*b->y;
-  out->y = a->z*b->x - a->x*b->z;
-  out->z = a->x*b->y - a->y*b->x;
+  out->x = (a->y * b->z) - (a->z * b->y);
+  out->y = (a->z * b->x) - (a->x * b->z);
+  out->z = (a->x * b->y) - (a->y * b->x);
 }
 
-float LSM303::vector_dot(const vector *a,const vector *b)
+template <typename Ta, typename Tb> float LSM303::vector_dot(const vector<Ta> *a, const vector<Tb> *b)
 {
-  return a->x*b->x+a->y*b->y+a->z*b->z;
+  return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
-void LSM303::vector_normalize(vector *a)
+void LSM303::vector_normalize(vector<float> *a)
 {
-  float mag = sqrt(vector_dot(a,a));
+  float mag = sqrt(vector_dot(a, a));
   a->x /= mag;
   a->y /= mag;
   a->z /= mag;

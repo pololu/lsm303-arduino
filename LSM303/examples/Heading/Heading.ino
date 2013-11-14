@@ -11,13 +11,13 @@ void setup() {
   
   // Calibration values. Use the Calibrate example program to get the values for
   // your compass.
-  compass.m_min.x = -520; compass.m_min.y = -570; compass.m_min.z = -770;
-  compass.m_max.x = +540; compass.m_max.y = +500; compass.m_max.z = 180;
+  compass.m_min.x = -32768; compass.m_min.y = -32768; compass.m_min.z = -32768;
+  compass.m_max.x = +32767; compass.m_max.y = +32767; compass.m_max.z = +32767;
 }
 
 void loop() {
   compass.read();
-  int heading = compass.heading((LSM303::vector){0,-1,0});
+  float heading = compass.heading((LSM303::vector<int>){0,-1,0});
   Serial.println(heading);
   delay(100);
 }

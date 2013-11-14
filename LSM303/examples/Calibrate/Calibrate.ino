@@ -2,7 +2,7 @@
 #include <LSM303.h>
 
 LSM303 compass;
-LSM303::vector running_min = {2047, 2047, 2047}, running_max = {-2048, -2048, -2048};
+LSM303::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
 
 void setup() {
   Serial.begin(9600);
