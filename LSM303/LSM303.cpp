@@ -123,7 +123,7 @@ void LSM303::enableDefault(void)
     // Enable Accelerometer
     // 0x57 = 0b01010111
     // 50 Hz ODR, all axes enabled
-    writeAccReg(LSM303_CTRL_REG1_A, 0x27);
+    writeAccReg(LSM303_CTRL1, 0x57);
     
     // Enable Magnetometer
     // 0x00 = 0b00000000
@@ -268,9 +268,9 @@ void LSM303::readAcc(void)
   // if you port it to a compiler that does a logical right shift instead.
   if (_device != LSM303D_DEVICE)
   {
-    a.x <<= 4;
-    a.y <<= 4;
-    a.z <<= 4;
+    a.x >>= 4;
+    a.y >>= 4;
+    a.z >>= 4;
   }
 }
 
@@ -378,7 +378,7 @@ template <typename T> float LSM303::heading(vector<T> from)
     // compute heading
     float heading = atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / M_PI;
     if (heading < 0) heading += 360;
-  return heading;
+    return heading;
 }
 
 template <typename Ta, typename Tb, typename To> void LSM303::vector_cross(const vector<Ta> *a,const vector<Tb> *b, vector<To> *out)
