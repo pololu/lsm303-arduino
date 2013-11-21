@@ -3,31 +3,24 @@
 
 LSM303 compass;
 
-void setup() {
+char report[80];
+
+void setup()
+{
   Serial.begin(9600);
   Wire.begin();
   compass.init();
   compass.enableDefault();
 }
 
-void loop() {
+void loop()
+{
   compass.read();
 
-  Serial.print("A ");
-  Serial.print("X: ");
-  Serial.print((int)compass.a.x);
-  Serial.print(" Y: ");
-  Serial.print((int)compass.a.y);
-  Serial.print(" Z: ");
-  Serial.print((int)compass.a.z);
-
-  Serial.print(" M ");  
-  Serial.print("X: ");
-  Serial.print((int)compass.m.x);
-  Serial.print(" Y: ");
-  Serial.print((int)compass.m.y);
-  Serial.print(" Z: ");
-  Serial.println((int)compass.m.z);
+  snprintf(report, sizeof(report), "%8d%8d%8d%8d%8d%8d",
+    compass.a.x, compass.a.y, compass.a.z,
+    compass.m.x, compass.m.y, compass.m.z);
+  Serial.println(report); 
   
   delay(100);
 }
