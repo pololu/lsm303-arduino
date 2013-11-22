@@ -428,15 +428,28 @@ void LSM303::read(void)
   readMag();
 }
 
-// Returns the number of degrees from the -Y axis that it
-// is pointing.
+// Returns the angular difference in the horizontal plane between a
+// default vector and North, in degrees.
+//
+// The default vector here is chosen to point along the surface of the
+// PCB, in the direction of the top of the text on the silkscreen.
+// This is the +X axis on the Pololu LSM303D carrier and the -Y axis
+// on the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH carriers.
+
 int LSM303::heading(void)
 {
-  return heading((vector<int>){0,-1,0});
+  if (_device == device_D)
+  {
+    return heading((vector<int>){1, 0, 0});
+  }
+  else
+  {
+    return heading((vector<int>){0, -1, 0});
+  }
 }
 
 // Returns the angular difference in the horizontal plane between the
-// From vector and North, in degrees.
+// "from" vector and North, in degrees.
 //
 // Description of heading algorithm:
 // Shift and scale the magnetic reading based on calibration data to
