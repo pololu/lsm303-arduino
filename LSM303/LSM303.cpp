@@ -185,39 +185,96 @@ bool LSM303::init(deviceType device, sa0State sa0)
   }
 }
 
-// Turns on the LSM303's accelerometer and magnetometers and places them in normal
-// mode.
+// Enables the LSM303's accelerometer and magnetometer. Also:
+// - Sets sensor full scales (gain) to default power-on values, which
+//   are +/- 2 g for accelerometer and +/- 1.3 gauss for magnetometer
+//   (+/- 4 gauss on LSM303D).
+// - Selects 50 Hz ODR (output data rate) for accelerometer and 7.5 Hz
+//   ODR for magnetometer (6.25 Hz on LSM303D). (These are the ODR 
+//   settings for which the electrical characteristics are specified
+//   in the datasheets.)
+// - Enables high resolution modes (if available).
+// Note that this function will also reset other settings controlled
+// by the registers it writes to.
 void LSM303::enableDefault(void)
 {
 
   if (_device == device_D)
   {
-    // Enable Accelerometer
-    // 0x57 = 0b01010111
-    // 50 Hz ODR, all axes enabled
-    writeAccReg(CTRL1, 0x57);
+    // Accelerometer
     
-    // Enable Magnetometer
+    // 0x57 = 0b01010111
+    // AFS = 0 (+/- 2 g full scale)
+    writeReg(CTRL2, 0x00);
+    
+    // 0x57 = 0b01010111
+    // AODR = 0101 (50 Hz ODR); AZEN = AYEN = AXEN = 1 (all axes enabled)
+    writeReg(CTRL1, 0x57);
+
+    // Magnetometer
+    
+    // 0x64 = 0b01100100
+    // M_RES = 11 (high resolution mode); M_ODR = 001 (6.25 Hz ODR)
+    writeReg(CTRL5, 0x64);
+    
+    // 0x20 = 0b00100000
+    // MFS = 01 (+/- 4 gauss full scale)
+    writeReg(CTRL6, 0x20);
+    
     // 0x00 = 0b00000000
-    // Continuous conversion mode
-    writeMagReg(CTRL7, 0x00);
-    // 0x70 = 0b01110000
-    // high resolution mode, 50 Hz ODR
-    writeMagReg(CTRL5, 0x70);
+    // MLP = 0 (low power mode off); MD = 00 (continuous-conversion mode)
+    writeReg(CTRL7, 0x00);
   }
-  else
+  else if (_device == device_DLHC)
   {
-    // Enable Accelerometer
+    // Accelerometer
+    
+    // 0x08 = 0b00001000
+    // FS = 00 (+/- 2 g full scale); HR = 1 (high resolution enable) 
+    writeAccReg(CTRL_REG4_A, 0x08);
+    
+    // 0x47 = 0b01000111
+    // ODR = 0100 (50 Hz ODR); LPen = 0 (normal mode); Zen = Yen = Xen = 1 (all axes enabled)
+    writeAccReg(CTRL_REG1_A, 0x47);
+
+    // Magnetometer
+    
+    // 0x0C = 0b00001100
+    // DO = 011 (7.5 Hz ODR)
+    writeMagReg(CRA_REG_M, 0x0C);
+    
+    // 0x20 = 0b00100000
+    // GN = 001 (+/- 1.3 gauss full scale)
+    writeMagReg(CRB_REG_M, 0x20);
+    
+    // 0x00 = 0b00000000
+    // MD = 00 (continuous-conversion mode)
+    writeMagReg(MR_REG_M, 0x00);
+  }
+  else // DLM, DLH
+  {
+    // Accelerometer
+    
+    // 0x00 = 0b00000000
+    // FS = 00 (+/- 2 g full scale)
+    writeAccReg(CTRL_REG4_A, 0x00);
+    
     // 0x27 = 0b00100111
-    // Normal power mode (DLHC: 10 Hz), all axes enabled
+    // PM = 001 (normal mode); DR = 00 (50 Hz ODR); Zen = Yen = Xen = 1 (all axes enabled)
     writeAccReg(CTRL_REG1_A, 0x27);
 
-    if (_device == device_DLHC)
-      writeAccReg(CTRL_REG4_A, 0x08); // DLHC: enable high resolution mode
-
-    // Enable Magnetometer
+    // Magnetometer
+    
+    // 0x0C = 0b00001100
+    // DO = 011 (7.5 Hz ODR)
+    writeMagReg(CRA_REG_M, 0x0C);
+    
+    // 0x20 = 0b00100000
+    // GN = 001 (+/- 1.3 gauss full scale)
+    writeMagReg(CRB_REG_M, 0x20);
+    
     // 0x00 = 0b00000000
-    // Continuous conversion mode
+    // MD = 00 (continuous-conversion mode)
     writeMagReg(MR_REG_M, 0x00);
   }
 }
