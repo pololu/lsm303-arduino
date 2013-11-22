@@ -351,20 +351,12 @@ void LSM303::readAcc(void)
   byte zla = Wire.read();
   byte zha = Wire.read();
 
+  // combine high and low bytes
+  // This no longer drops the lowest 4 bits of the readings from the DLH/DLM/DLHC, which are always 0
+  // (12-bit resolution, left-aligned). The D has 16-bit resolution
   a.x = (int16_t)(xha << 8 | xla);
   a.y = (int16_t)(yha << 8 | yla);
   a.z = (int16_t)(zha << 8 | zla);
-  
-  // LSM303D has 16-bit accelerometer outputs. For all others, 
-  // combine high and low bytes, then shift right to discard lowest 4 bits (which are meaningless)
-  // GCC performs an arithmetic right shift for signed negative numbers, but this code will not work
-  // if you port it to a compiler that does a logical right shift instead.
-  if (_device != device_D)
-  {
-    a.x >>= 4;
-    a.y >>= 4;
-    a.z >>= 4;
-  }
 }
 
 // Reads the 3 magnetometer channels and stores them in vector m
