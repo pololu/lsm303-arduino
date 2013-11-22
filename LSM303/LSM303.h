@@ -16,7 +16,7 @@ class LSM303
 
     // register addresses
 
-    enum lsm303Reg
+    enum regAddr
     {
       TEMP_OUT_L        = 0x05, // D
       TEMP_OUT_H        = 0x06, // D
@@ -99,17 +99,17 @@ class LSM303
       TIME_WINDOW       = 0x3D, // D
       TIME_WINDOW_A     = 0x3D, // DLHC
 
-      ACT_THS           = 0x3E,
-      ACT_DUR           = 0x3F,
+      Act_THS           = 0x3E, // D
+      Act_DUR           = 0x3F, // D
 
-      CRA_REG_M         = 0x00,
-      CRB_REG_M         = 0x01,
-      MR_REG_M          = 0x02,
+      CRA_REG_M         = 0x00, // DLH, DLM, DLHC
+      CRB_REG_M         = 0x01, // DLH, DLM, DLHC
+      MR_REG_M          = 0x02, // DLH, DLM, DLHC
 
-      SR_REG_M          = 0x09,
-      IRA_REG_M         = 0x0A,
-      IRB_REG_M         = 0x0B,
-      IRC_REG_M         = 0x0C,
+      SR_REG_M          = 0x09, // DLH, DLM, DLHC
+      IRA_REG_M         = 0x0A, // DLH, DLM, DLHC
+      IRB_REG_M         = 0x0B, // DLH, DLM, DLHC
+      IRC_REG_M         = 0x0C, // DLH, DLM, DLHC
       
       WHO_AM_I_M        = 0x0F, // DLM
       WHO_AM_I          = 0x0F, // D
@@ -158,18 +158,6 @@ class LSM303
       D_OUT_Z_L_M       = 0x0C,
       D_OUT_Z_H_M       = 0x0D
     };
-    
-    // HEX  = BIN          RANGE    GAIN X/Y/Z        GAIN Z
-    //                               DLH (DLM/DLHC)    DLH (DLM/DLHC)
-    // 0x20 = 0b00100000   ±1.3     1055 (1100)        950 (980) (default)
-    // 0x40 = 0b01000000   ±1.9      795  (855)        710 (760)
-    // 0x60 = 0b01100000   ±2.5      635  (670)        570 (600)
-    // 0x80 = 0b10000000   ±4.0      430  (450)        385 (400)
-    // 0xA0 = 0b10100000   ±4.7      375  (400)        335 (355)
-    // 0xC0 = 0b11000000   ±5.6      320  (330)        285 (295)
-    // 0xE0 = 0b11100000   ±8.1      230  (230)        205 (205)
-    enum magGain { magGain_13 = 0x20, magGain_19 = 0x40, magGain_25 = 0x60, magGain_40 = 0x80,
-                   magGain_47 = 0xA0, magGain_56 = 0xC0, magGain_81 = 0xE0 };
 
     vector<int16_t> a; // accelerometer readings
     vector<int16_t> m; // magnetometer readings
@@ -185,12 +173,13 @@ class LSM303
 
     void enableDefault(void);
 
-    void writeAccReg(lsm303Reg reg, byte value);
-    byte readAccReg(lsm303Reg reg);
-    void writeMagReg(lsm303Reg reg, byte value);
-    byte readMagReg(lsm303Reg reg);
-
-    void setMagGain(magGain value);
+    void writeAccReg(regAddr reg, byte value);
+    byte readAccReg(regAddr reg);
+    void writeMagReg(regAddr reg, byte value);
+    byte readMagReg(regAddr reg);
+    
+    void writeReg(regAddr reg, byte value);
+    byte readReg(regAddr reg);
 
     void readAcc(void);
     void readMag(void);
@@ -204,7 +193,6 @@ class LSM303
     template <typename T> float heading(vector<T> from);
 
     // vector functions
-
     template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
     template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
     static void vector_normalize(vector<float> *a);
@@ -213,12 +201,12 @@ class LSM303
     deviceType _device; // chip type (DLH, DLM, or DLHC)
     byte acc_address;
     byte mag_address;
-    lsm303Reg out_x_l_m, out_x_h_m, out_y_l_m, out_y_h_m, out_z_l_m, out_z_h_m, mag_data_first;
+    regAddr out_x_l_m, out_x_h_m, out_y_l_m, out_y_h_m, out_z_l_m, out_z_h_m;
 
     unsigned int io_timeout;
     bool did_timeout;
 
-    int testReg(byte address, lsm303Reg reg);
+    int testReg(byte address, regAddr reg);
 };
 
 #endif
