@@ -34,9 +34,13 @@ LSM303::LSM303(void)
 
 // Public Methods //////////////////////////////////////////////////////////////
 
+// Did a timeout occur in readAcc(), readMag(), or read() since the last call to timeoutOccurred()?
 bool LSM303::timeoutOccurred()
 {
-  return did_timeout;
+  bool tmp = did_timeout;
+  did_timeout = false;
+  return tmp;
+  
 }
 
 void LSM303::setTimeout(unsigned int timeout)
@@ -56,45 +60,46 @@ bool LSM303::init(deviceType device, sa0State sa0)
   {
     if (testReg(D_SA0_HIGH_ADDRESS, WHO_AM_I) == D_WHO_ID)
     {
-      // device responds to address 0011101; it's a D with SA0 high
+      // device responds to address 0011101 with D ID; it's a D with SA0 high
       device = device_D;
       sa0 = sa0_high;
     }
+    else if (testReg(D_SA0_LOW_ADDRESS, WHO_AM_I) == D_WHO_ID)
+    {
+      // device responds to address 0011110 with D ID; it's a D with SA0 low
+      device = device_D;
+      sa0 = sa0_low;
+    }
+    // Remaining possibilities: DLHC, DLM, or DLH. DLHC seems to respond to WHO_AM_I request the
+    // same way as DLM, even though this register isn't documented in its datasheet, so instead,
+    // guess if it's a DLHC based on acc address (Pololu boards pull SA0 low on DLM and DLH;
+    // DLHC doesn't have SA0 but uses same acc address as DLH/DLM with SA0 high).
+    else if (testReg(NON_D_ACC_SA0_HIGH_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
+    {
+      // device responds to address 0011001; guess that it's a DLHC
+      device = device_DLHC;
+      sa0 = sa0_high;
+    }
+    // Remaining possibilities: DLM or DLH. Check acc with SA0 low address to make sure it's responsive
+    else if (testReg(NON_D_ACC_SA0_LOW_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
+    {
+      // device responds to address 0011000 with DLM ID; guess that it's a DLM
+      sa0 = sa0_low;
+      
+      // Now check WHO_AM_I_M
+      if (testReg(NON_D_MAG_ADDRESS, WHO_AM_I_M) == DLM_WHO_ID)
+      {
+        device = device_DLM;
+      }
+      else
+      {
+        device = device_DLH;
+      }
+    }
     else
     {
-      // might be D with SA0 low, DLHC, DLM, or DLH
-      switch (testReg(D_SA0_LOW_ADDRESS, WHO_AM_I))
-      {
-        case D_WHO_ID:
-          // device responds to address 0011110 with D ID; it's a D with SA0 low
-          device = device_D;
-          sa0 = sa0_low;
-          break;
-          
-        case DLM_WHO_ID:
-          // device responds to address 0011110 with DLM ID; it's a DLM magnetometer (accelerometer SA0 still indeterminate)
-          device = device_DLM;
-          break;
-          
-        default: // TEST_REG_NACK
-          // might be DLHC or DLH; make a guess based on accelerometer address
-          // (Pololu boards pull SA0 low on DLH, and DLHC doesn't have SA0 but uses same acc address as DLH/DLM with SA0 high)
-          if (testReg(NON_D_ACC_SA0_HIGH_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
-          {
-            // device responds to address 0011001; guess that it's a DLHC
-            device = device_DLHC;
-            sa0 = sa0_high;
-          }
-          else if (testReg(NON_D_ACC_SA0_LOW_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
-          {
-            // device responds to address 0011000; guess that it's a DLH
-            device = device_DLH;
-            sa0 = sa0_low;
-          }
-          else
-            // device hasn't responded meaningfully, so give up
-            return false;
-      } 
+      // device hasn't responded meaningfully, so give up
+      return false;
     }
   }
   
@@ -107,7 +112,7 @@ bool LSM303::init(deviceType device, sa0State sa0)
       {
         sa0 = sa0_high;
       }
-      else if (testReg(D_SA0_HIGH_ADDRESS, WHO_AM_I) == D_WHO_ID)
+      else if (testReg(D_SA0_LOW_ADDRESS, WHO_AM_I) == D_WHO_ID)
       {
         sa0 = sa0_low;
       }
@@ -134,9 +139,9 @@ bool LSM303::init(deviceType device, sa0State sa0)
       }
     }
   }
-  
+
   _device = device;
-  
+
   // set device addresses and translated register addresses
   switch (device)
   {
@@ -183,6 +188,7 @@ bool LSM303::init(deviceType device, sa0State sa0)
       out_z_l_m = DLH_OUT_Z_L_M;
       break; 
   }
+  return true;
 }
 
 // Enables the LSM303's accelerometer and magnetometer. Also:
@@ -392,7 +398,6 @@ void LSM303::readAcc(void)
   Wire.requestFrom(acc_address, (byte)6);
 
   unsigned int millis_start = millis();
-  did_timeout = false;
   while (Wire.available() < 6) {
     if (io_timeout > 0 && ((unsigned int)millis() - millis_start) > io_timeout)
     {
@@ -427,7 +432,6 @@ void LSM303::readMag(void)
   Wire.requestFrom(mag_address, (byte)6);
 
   unsigned int millis_start = millis();
-  did_timeout = false;
   while (Wire.available() < 6) {
     if (io_timeout > 0 && ((unsigned int)millis() - millis_start) > io_timeout)
     {
