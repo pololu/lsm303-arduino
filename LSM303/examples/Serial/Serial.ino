@@ -18,7 +18,7 @@ registers actually contain a left-aligned 12-bit number, so the lowest
 (divided by 16) to be consistent with the conversion factors specified
 in the datasheets.
 
-Example: An LSM303DLH gives an accelerometer Z axis reading of -16144 
+Example: An LSM303DLH gives an accelerometer Z axis reading of -16144
 with its default full scale setting of +/- 2 g. Dropping the lowest 4
 bits gives a 12-bit raw value of -1009. The LA_So specification in the
 LSM303DLH datasheet (page 11) states a conversion factor of 1 mg/digit
@@ -39,7 +39,7 @@ void setup()
   Wire.begin();
   compass.init();
   compass.enableDefault();
-  
+
   while (!Serial);
   Serial.println("         Accelerometer           Magnetometer");
   Serial.println("       X       Y       Z       X       Y       Z");
@@ -52,7 +52,7 @@ void loop()
   snprintf(report, sizeof(report), "%8d%8d%8d%8d%8d%8d",
     compass.a.x, compass.a.y, compass.a.z,
     compass.m.x, compass.m.y, compass.m.z);
-  Serial.println(report); 
-  
+  Serial.println(report);
+
   delay(100);
 }
