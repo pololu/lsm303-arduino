@@ -32,7 +32,7 @@ void loop() {
   the -Y axis on the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH
   carriers.
   
-  To use a different axis as a reference, use the version of heading()
+  To use a different vector as a reference, use the version of heading()
   that takes a vector argument; for example, use
   
     compass.heading((LSM303::vector<int>){0, 0, 1});
