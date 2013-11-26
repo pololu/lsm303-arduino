@@ -349,7 +349,7 @@ void LSM303::writeReg(regAddr reg, byte value)
 {
   // mag address == acc_address for LSM303D, so it doesn't really matter which one we use.
   // Use writeMagReg so it can translate OUT_[XYZ]_[HL]_M
-  if (_device == device_D || reg < CTRL_REG1_A || reg == TEMP_OUT_H_M || TEMP_OUT_L_M)
+  if (_device == device_D || reg < CTRL_REG1_A)
   {
     writeMagReg(reg, value);
   }
@@ -359,11 +359,13 @@ void LSM303::writeReg(regAddr reg, byte value)
   }
 }
 
+// Note that this function will not work for reading TEMP_OUT_H_M and TEMP_OUT_L_M on the DLHC.
+// To read those two registers, use readMagReg() instead.
 byte LSM303::readReg(regAddr reg)
 {
   // mag address == acc_address for LSM303D, so it doesn't really matter which one we use.
   // Use writeMagReg so it can translate OUT_[XYZ]_[HL]_M
-  if (_device == device_D || reg < CTRL_REG1_A || reg == TEMP_OUT_H_M || TEMP_OUT_L_M)
+  if (_device == device_D || reg < CTRL_REG1_A)
   {
     return readMagReg(reg);
   }
