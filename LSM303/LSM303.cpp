@@ -21,10 +21,14 @@
 
 LSM303::LSM303(void)
 {
-  // These values lead to an assumed magnetometer bias of 0.
-  // It is recommended that a calibration be done for your particular unit to determine its bias.
-  m_max.x = +32767; m_max.y = +32767; m_max.z = +32767;
-  m_min.x = -32767; m_min.y = -32767; m_min.z = -32767;
+  /*
+  These values lead to an assumed magnetometer bias of 0.
+  Use the Calibrate example program to determine appropriate values
+  for your particular unit. The Heading example demonstrates how to
+  adjust these values in your own sketch.
+  */
+  m_min = (LSM303::vector<int16_t>){-32767, -32767, -32767};
+  m_max = (LSM303::vector<int16_t>){+32767, +32767, +32767};
 
   _device = device_auto;
 
@@ -40,7 +44,7 @@ bool LSM303::timeoutOccurred()
   bool tmp = did_timeout;
   did_timeout = false;
   return tmp;
-  
+
 }
 
 void LSM303::setTimeout(unsigned int timeout)
@@ -85,7 +89,7 @@ bool LSM303::init(deviceType device, sa0State sa0)
     {
       // device responds to address 0011000 with DLM ID; guess that it's a DLM
       sa0 = sa0_low;
-      
+
       // Now check WHO_AM_I_M
       if (testReg(NON_D_MAG_ADDRESS, WHO_AM_I_M) == DLM_WHO_ID)
       {
@@ -102,7 +106,7 @@ bool LSM303::init(deviceType device, sa0State sa0)
       return false;
     }
   }
-  
+
   // determine SA0 if necessary
   if (sa0 == sa0_auto)
   {
@@ -119,7 +123,7 @@ bool LSM303::init(deviceType device, sa0State sa0)
       else
       {
         // no response on either possible address; give up
-        return false;  
+        return false;
       }
     }
     else if (device == device_DLM || device == device_DLH)
@@ -147,86 +151,88 @@ bool LSM303::init(deviceType device, sa0State sa0)
   {
     case device_D:
       acc_address = mag_address = (sa0 == sa0_high) ? D_SA0_HIGH_ADDRESS : D_SA0_LOW_ADDRESS;
-      out_x_l_m = D_OUT_X_L_M;
-      out_x_h_m = D_OUT_X_H_M;
-      out_y_l_m = D_OUT_Y_L_M;
-      out_y_h_m = D_OUT_Y_H_M;
-      out_z_l_m = D_OUT_Z_L_M;
-      out_z_h_m = D_OUT_Z_H_M;
+      translated_regs[-OUT_X_L_M] = D_OUT_X_L_M;
+      translated_regs[-OUT_X_H_M] = D_OUT_X_H_M;
+      translated_regs[-OUT_Y_L_M] = D_OUT_Y_L_M;
+      translated_regs[-OUT_Y_H_M] = D_OUT_Y_H_M;
+      translated_regs[-OUT_Z_L_M] = D_OUT_Z_L_M;
+      translated_regs[-OUT_Z_H_M] = D_OUT_Z_H_M;
       break;
-      
+
     case device_DLHC:
       acc_address = NON_D_ACC_SA0_HIGH_ADDRESS; // DLHC doesn't have SA0 but uses same acc address as DLH/DLM with SA0 high
       mag_address = NON_D_MAG_ADDRESS;
-      out_x_h_m = DLHC_OUT_X_H_M;
-      out_x_l_m = DLHC_OUT_X_L_M;
-      out_y_h_m = DLHC_OUT_Y_H_M;
-      out_y_l_m = DLHC_OUT_Y_L_M;
-      out_z_h_m = DLHC_OUT_Z_H_M;
-      out_z_l_m = DLHC_OUT_Z_L_M;
+      translated_regs[-OUT_X_H_M] = DLHC_OUT_X_H_M;
+      translated_regs[-OUT_X_L_M] = DLHC_OUT_X_L_M;
+      translated_regs[-OUT_Y_H_M] = DLHC_OUT_Y_H_M;
+      translated_regs[-OUT_Y_L_M] = DLHC_OUT_Y_L_M;
+      translated_regs[-OUT_Z_H_M] = DLHC_OUT_Z_H_M;
+      translated_regs[-OUT_Z_L_M] = DLHC_OUT_Z_L_M;
       break;
-      
+
     case device_DLM:
       acc_address = (sa0 == sa0_high) ? NON_D_ACC_SA0_HIGH_ADDRESS : NON_D_ACC_SA0_LOW_ADDRESS;
       mag_address = NON_D_MAG_ADDRESS;
-      out_x_h_m = DLM_OUT_X_H_M;
-      out_x_l_m = DLM_OUT_X_L_M;
-      out_y_h_m = DLM_OUT_Y_H_M;
-      out_y_l_m = DLM_OUT_Y_L_M;
-      out_z_h_m = DLM_OUT_Z_H_M;
-      out_z_l_m = DLM_OUT_Z_L_M;
+      translated_regs[-OUT_X_H_M] = DLM_OUT_X_H_M;
+      translated_regs[-OUT_X_L_M] = DLM_OUT_X_L_M;
+      translated_regs[-OUT_Y_H_M] = DLM_OUT_Y_H_M;
+      translated_regs[-OUT_Y_L_M] = DLM_OUT_Y_L_M;
+      translated_regs[-OUT_Z_H_M] = DLM_OUT_Z_H_M;
+      translated_regs[-OUT_Z_L_M] = DLM_OUT_Z_L_M;
       break;
-      
+
     case device_DLH:
       acc_address = (sa0 == sa0_high) ? NON_D_ACC_SA0_HIGH_ADDRESS : NON_D_ACC_SA0_LOW_ADDRESS;
       mag_address = NON_D_MAG_ADDRESS;
-      out_x_h_m = DLH_OUT_X_H_M;
-      out_x_l_m = DLH_OUT_X_L_M;
-      out_y_h_m = DLH_OUT_Y_H_M;
-      out_y_l_m = DLH_OUT_Y_L_M;
-      out_z_h_m = DLH_OUT_Z_H_M;
-      out_z_l_m = DLH_OUT_Z_L_M;
-      break; 
+      translated_regs[-OUT_X_H_M] = DLH_OUT_X_H_M;
+      translated_regs[-OUT_X_L_M] = DLH_OUT_X_L_M;
+      translated_regs[-OUT_Y_H_M] = DLH_OUT_Y_H_M;
+      translated_regs[-OUT_Y_L_M] = DLH_OUT_Y_L_M;
+      translated_regs[-OUT_Z_H_M] = DLH_OUT_Z_H_M;
+      translated_regs[-OUT_Z_L_M] = DLH_OUT_Z_L_M;
+      break;
   }
   return true;
 }
 
-// Enables the LSM303's accelerometer and magnetometer. Also:
-// - Sets sensor full scales (gain) to default power-on values, which
-//   are +/- 2 g for accelerometer and +/- 1.3 gauss for magnetometer
-//   (+/- 4 gauss on LSM303D).
-// - Selects 50 Hz ODR (output data rate) for accelerometer and 7.5 Hz
-//   ODR for magnetometer (6.25 Hz on LSM303D). (These are the ODR 
-//   settings for which the electrical characteristics are specified
-//   in the datasheets.)
-// - Enables high resolution modes (if available).
-// Note that this function will also reset other settings controlled
-// by the registers it writes to.
+/*
+Enables the LSM303's accelerometer and magnetometer. Also:
+- Sets sensor full scales (gain) to default power-on values, which are
+  +/- 2 g for accelerometer and +/- 1.3 gauss for magnetometer
+  (+/- 4 gauss on LSM303D).
+- Selects 50 Hz ODR (output data rate) for accelerometer and 7.5 Hz
+  ODR for magnetometer (6.25 Hz on LSM303D). (These are the ODR
+  settings for which the electrical characteristics are specified in
+  the datasheets.)
+- Enables high resolution modes (if available).
+Note that this function will also reset other settings controlled by
+the registers it writes to.
+*/
 void LSM303::enableDefault(void)
 {
 
   if (_device == device_D)
   {
     // Accelerometer
-    
+
     // 0x57 = 0b01010111
     // AFS = 0 (+/- 2 g full scale)
     writeReg(CTRL2, 0x00);
-    
+
     // 0x57 = 0b01010111
     // AODR = 0101 (50 Hz ODR); AZEN = AYEN = AXEN = 1 (all axes enabled)
     writeReg(CTRL1, 0x57);
 
     // Magnetometer
-    
+
     // 0x64 = 0b01100100
     // M_RES = 11 (high resolution mode); M_ODR = 001 (6.25 Hz ODR)
     writeReg(CTRL5, 0x64);
-    
+
     // 0x20 = 0b00100000
     // MFS = 01 (+/- 4 gauss full scale)
     writeReg(CTRL6, 0x20);
-    
+
     // 0x00 = 0b00000000
     // MLP = 0 (low power mode off); MD = 00 (continuous-conversion mode)
     writeReg(CTRL7, 0x00);
@@ -234,25 +240,25 @@ void LSM303::enableDefault(void)
   else if (_device == device_DLHC)
   {
     // Accelerometer
-    
+
     // 0x08 = 0b00001000
-    // FS = 00 (+/- 2 g full scale); HR = 1 (high resolution enable) 
+    // FS = 00 (+/- 2 g full scale); HR = 1 (high resolution enable)
     writeAccReg(CTRL_REG4_A, 0x08);
-    
+
     // 0x47 = 0b01000111
     // ODR = 0100 (50 Hz ODR); LPen = 0 (normal mode); Zen = Yen = Xen = 1 (all axes enabled)
     writeAccReg(CTRL_REG1_A, 0x47);
 
     // Magnetometer
-    
+
     // 0x0C = 0b00001100
     // DO = 011 (7.5 Hz ODR)
     writeMagReg(CRA_REG_M, 0x0C);
-    
+
     // 0x20 = 0b00100000
     // GN = 001 (+/- 1.3 gauss full scale)
     writeMagReg(CRB_REG_M, 0x20);
-    
+
     // 0x00 = 0b00000000
     // MD = 00 (continuous-conversion mode)
     writeMagReg(MR_REG_M, 0x00);
@@ -260,25 +266,25 @@ void LSM303::enableDefault(void)
   else // DLM, DLH
   {
     // Accelerometer
-    
+
     // 0x00 = 0b00000000
     // FS = 00 (+/- 2 g full scale)
     writeAccReg(CTRL_REG4_A, 0x00);
-    
+
     // 0x27 = 0b00100111
     // PM = 001 (normal mode); DR = 00 (50 Hz ODR); Zen = Yen = Xen = 1 (all axes enabled)
     writeAccReg(CTRL_REG1_A, 0x27);
 
     // Magnetometer
-    
+
     // 0x0C = 0b00001100
     // DO = 011 (7.5 Hz ODR)
     writeMagReg(CRA_REG_M, 0x0C);
-    
+
     // 0x20 = 0b00100000
     // GN = 001 (+/- 1.3 gauss full scale)
     writeMagReg(CRB_REG_M, 0x20);
-    
+
     // 0x00 = 0b00000000
     // MD = 00 (continuous-conversion mode)
     writeMagReg(MR_REG_M, 0x00);
@@ -323,30 +329,10 @@ byte LSM303::readMagReg(regAddr reg)
 {
   byte value;
 
-  // if dummy register address (magnetometer Y/Z), use device type to determine actual address
+  // if dummy register address (magnetometer Y/Z), look up actual translated address (based on device type)
   if (reg < 0)
   {
-    switch (reg)
-    {
-      case OUT_X_H_M:
-        reg = out_x_h_m;
-        break;
-      case OUT_X_L_M:
-        reg = out_x_l_m;
-        break;
-      case OUT_Y_H_M:
-        reg = out_y_h_m;
-        break;
-      case OUT_Y_L_M:
-        reg = out_y_l_m;
-        break;
-      case OUT_Z_H_M:
-        reg = out_z_h_m;
-        break;
-      case OUT_Z_L_M:
-        reg = out_z_l_m;
-        break;
-    }
+    reg = translated_regs[-reg];
   }
 
   Wire.beginTransmission(mag_address);
@@ -427,7 +413,7 @@ void LSM303::readMag(void)
   Wire.beginTransmission(mag_address);
   // If LSM303D, assert MSB to enable subaddress updating
   // OUT_X_L_M comes first on D, OUT_X_H_M on others
-  Wire.write((_device == device_D) ? out_x_l_m | (1 << 7) : out_x_h_m);
+  Wire.write((_device == device_D) ? translated_regs[-OUT_X_L_M] | (1 << 7) : translated_regs[-OUT_X_H_M]);
   last_status = Wire.endTransmission();
   Wire.requestFrom(mag_address, (byte)6);
 
@@ -439,9 +425,9 @@ void LSM303::readMag(void)
       return;
     }
   }
-  
+
   byte xlm, xhm, ylm, yhm, zlm, zhm;
-  
+
   if (_device == device_D)
   {
     /// D: X_L, X_H, Y_L, Y_H, Z_L, Z_H
@@ -489,15 +475,16 @@ void LSM303::read(void)
   readMag();
 }
 
-// Returns the angular difference in the horizontal plane between a
-// default vector and North, in degrees.
-//
-// The default vector here is chosen to point along the surface of the
-// PCB, in the direction of the top of the text on the silkscreen.
-// This is the +X axis on the Pololu LSM303D carrier and the -Y axis
-// on the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH carriers.
+/*
+Returns the angular difference in the horizontal plane between a
+default vector and north, in degrees.
 
-int LSM303::heading(void)
+The default vector here is chosen to point along the surface of the
+PCB, in the direction of the top of the text on the silkscreen.
+This is the +X axis on the Pololu LSM303D carrier and the -Y axis on
+the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH carriers.
+*/
+float LSM303::heading(void)
 {
   if (_device == device_D)
   {
@@ -509,26 +496,28 @@ int LSM303::heading(void)
   }
 }
 
-// Returns the angular difference in the horizontal plane between the
-// "from" vector and North, in degrees.
-//
-// Description of heading algorithm:
-// Shift and scale the magnetic reading based on calibration data to
-// to find the North vector. Use the acceleration readings to
-// determine the Up vector (gravity is measured as an upward
-// acceleration). The cross product of North and Up vectors is East.
-// The vectors East and North form a basis for the horizontal plane.
-// The From vector is projected into the horizontal plane and the
-// angle between the projected vector and north is returned.
+/*
+Returns the angular difference in the horizontal plane between the
+"from" vector and north, in degrees.
+
+Description of heading algorithm:
+Shift and scale the magnetic reading based on calibration data to find
+the North vector. Use the acceleration readings to determine the Up
+vector (gravity is measured as an upward acceleration). The cross
+product of North and Up vectors is East. The vectors East and North
+form a basis for the horizontal plane. The From vector is projected
+into the horizontal plane and the angle between the projected vector
+and horizontal north is returned.
+*/
 template <typename T> float LSM303::heading(vector<T> from)
 {
     vector<int32_t> temp_m = {m.x, m.y, m.z};
-    
+
     // subtract offset (average of min and max) from magnetometer readings
     temp_m.x -= ((int32_t)m_min.x + m_max.x) / 2;
     temp_m.y -= ((int32_t)m_min.y + m_max.y) / 2;
     temp_m.z -= ((int32_t)m_min.z + m_max.z) / 2;
-  
+
     // compute E and N
     vector<float> E;
     vector<float> N;
@@ -570,7 +559,7 @@ int LSM303::testReg(byte address, regAddr reg)
   Wire.beginTransmission(address);
   Wire.write((byte)reg);
   last_status = Wire.endTransmission();
-  
+
   Wire.requestFrom(address, (byte)1);
   if (Wire.available())
     return Wire.read();

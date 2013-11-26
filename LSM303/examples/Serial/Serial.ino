@@ -39,17 +39,13 @@ void setup()
   Wire.begin();
   compass.init();
   compass.enableDefault();
-
-  while (!Serial);
-  Serial.println("         Accelerometer           Magnetometer");
-  Serial.println("       X       Y       Z       X       Y       Z");
 }
 
 void loop()
 {
   compass.read();
 
-  snprintf(report, sizeof(report), "%8d%8d%8d%8d%8d%8d",
+  snprintf(report, sizeof(report), "A: %6d %6d %6d    M: %6d %6d %6d",
     compass.a.x, compass.a.y, compass.a.z,
     compass.m.x, compass.m.y, compass.m.z);
   Serial.println(report);

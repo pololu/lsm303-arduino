@@ -15,7 +15,6 @@ class LSM303
     enum sa0State { sa0_low, sa0_high, sa0_auto };
 
     // register addresses
-
     enum regAddr
     {
       TEMP_OUT_L        = 0x05, // D
@@ -110,7 +109,7 @@ class LSM303
       IRA_REG_M         = 0x0A, // DLH, DLM, DLHC
       IRB_REG_M         = 0x0B, // DLH, DLM, DLHC
       IRC_REG_M         = 0x0C, // DLH, DLM, DLHC
-      
+
       WHO_AM_I_M        = 0x0F, // DLM
       WHO_AM_I          = 0x0F, // D
 
@@ -118,7 +117,9 @@ class LSM303
       TEMP_OUT_L_M      = 0x32, // DLHC
 
 
-      // dummy addresses for registers in different locations on different devices; the library translates these based on device type
+      // dummy addresses for registers in different locations on different devices;
+      // the library translates these based on device type
+      // value with sign flipped is used as index into translated_regs array
 
       OUT_X_H_M         = -1,
       OUT_X_L_M         = -2,
@@ -126,7 +127,7 @@ class LSM303
       OUT_Y_L_M         = -4,
       OUT_Z_H_M         = -5,
       OUT_Z_L_M         = -6,
-
+      // update dummy_reg_count if registers are added here!
 
       // device-specific register addresses
 
@@ -177,7 +178,7 @@ class LSM303
     byte readAccReg(regAddr reg);
     void writeMagReg(regAddr reg, byte value);
     byte readMagReg(regAddr reg);
-    
+
     void writeReg(regAddr reg, byte value);
     byte readReg(regAddr reg);
 
@@ -189,7 +190,7 @@ class LSM303
     unsigned int getTimeout(void);
     bool timeoutOccurred(void);
 
-    int heading(void);
+    float heading(void);
     template <typename T> float heading(vector<T> from);
 
     // vector functions
@@ -201,7 +202,9 @@ class LSM303
     deviceType _device; // chip type (DLH, DLM, or DLHC)
     byte acc_address;
     byte mag_address;
-    regAddr out_x_l_m, out_x_h_m, out_y_l_m, out_y_h_m, out_z_l_m, out_z_h_m;
+
+    static const int dummy_reg_count = 6;
+    regAddr translated_regs[dummy_reg_count + 1]; // index 0 not used
 
     unsigned int io_timeout;
     bool did_timeout;

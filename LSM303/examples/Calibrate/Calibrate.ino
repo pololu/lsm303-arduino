@@ -4,6 +4,8 @@
 LSM303 compass;
 LSM303::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
 
+char report[80];
+
 void setup() {
   Serial.begin(9600);
   Wire.begin();
@@ -22,21 +24,10 @@ void loop() {
   running_max.y = max(running_max.y, compass.m.y);
   running_max.z = max(running_max.z, compass.m.z);
   
-  Serial.print("M min ");
-  Serial.print("X: ");
-  Serial.print((int)running_min.x);
-  Serial.print(" Y: ");
-  Serial.print((int)running_min.y);
-  Serial.print(" Z: ");
-  Serial.print((int)running_min.z);
-
-  Serial.print(" M max ");  
-  Serial.print("X: ");
-  Serial.print((int)running_max.x);
-  Serial.print(" Y: ");
-  Serial.print((int)running_max.y);
-  Serial.print(" Z: ");
-  Serial.println((int)running_max.z);
+  snprintf(report, sizeof(report), "min: {%+6d, %+6d, %+6d}    max: {%+6d, %+6d, %+6d}",
+    running_min.x, running_min.y, running_min.z,
+    running_max.x, running_max.y, running_max.z);
+  Serial.println(report);
   
   delay(100);
 }
