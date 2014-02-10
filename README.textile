@@ -97,12 +97,13 @@ h2. Library Reference
 - @byte getDeviceType(void)@ := Returns the device type detected by @init()@.
 - @void enableDefault(void)@ := Turns on the accelerometer and magnetometer and enables a consistent set of default settings.
 This function will set the accelerometer's full scale to be +/-2 g, which means that a reading of 16384 corresponds to approximately 1 g. The magnetometer's full scale is set to +/-4 gauss for the LSM303D or +/-1.3 gauss on all other devices. See the comments in LSM303.cpp for a full explanation of these settings.
-- @void writeReg(byte reg, byte value)@ := Writes an accelerometer or magnetometer register with the given value. Register address constants are defined in LSM303.h.
-- @void writeReg(byte reg, byte value)@ := Reads an accelerometer or magnetometer register and returns the value read.[2]
-- @void writeAccReg(byte reg, byte value)@ := Writes an accelerometer register with the given value.
-- @byte readAccReg(byte reg)@ := Reads an accelerometer register and returns the value read.
-- @void writeMagReg(byte reg, byte value)@ := Writes a magnetometer register with the given value.
-- @byte readMagReg(int reg)@ := Reads a magnetometer register and returns the value read. If the magnetometer data registers are read using register address constants without a specific device prefix (e.g. @OUT_Y_H_M@), this function will automatically use the correct register addresses depending on the device type.
+- @void writeReg(regAddr reg, byte value)@ := Writes an accelerometer or magnetometer register with the given value. Register addresses are defined by the regAddr enumeration type in LSM303.h.
+Example use: @compass.writeReg(LSM303::CTRL_REG1_A, 0x57);@
+- @void readReg(regAddr reg)@ := Reads an accelerometer or magnetometer register and returns the value read.[2]
+- @void writeAccReg(regAddr reg, byte value)@ := Writes an accelerometer register with the given value.
+- @byte readAccReg(regAddr reg)@ := Reads an accelerometer register and returns the value read.
+- @void writeMagReg(regAddr reg, byte value)@ := Writes a magnetometer register with the given value.
+- @byte readMagReg(regAddr reg)@ := Reads a magnetometer register and returns the value read. If the magnetometer data registers are read using register address constants without a specific device prefix (e.g. @OUT_Y_H_M@), this function will automatically use the correct register addresses depending on the device type.
 - @void readAcc(void)@ := Takes a reading from the accelerometer and stores the values in the vector @a@. Conversion of the readings to units of g depends on the accelerometer's selected gain (full scale setting).
 Note that in the LSM303DLHC, LSM303DLM, and LSM303DLH, the acceleration data registers actually contain a left-aligned 12-bit number, so the lowest 4 bits are always 0, and the values in @a@ should be shifted right by 4 bits (divided by 16) to be consistent with the conversion factors specified in the datasheets.
 - @void readMag(void)@ := Takes a reading from the magnetometer and stores the values in the vector @m@. Conversion of the readings to units of gauss depends on the magnetometer's selected gain (full scale setting).
