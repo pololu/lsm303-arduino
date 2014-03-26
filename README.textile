@@ -83,6 +83,14 @@ the Pololu LSM303DLHC, LSM303DLM, and LSM303DLH carriers.) See the comments if y
 
 For the most accurate results, you should replace the values of @m_min@ and @m_max@ assigned in the @setup()@ function with your own values obtained from the Calibrate example.
 
+h2. Other Library Applications
+
+These programs make use of the LSM303 library but are not included with in the library archive or repository.
+
+- "MinIMU-9 + Arduino AHRS":https://github.com/pololu/minimu-9-ahrs-arduino := This sketch allows an Arduino connected to a MinIMU-9 or AltIMU-10 to function as an attitude and heading reference system, calculating estimated roll, pitch, and yaw angles from sensor readings that can be visualized with a 3D test program on a PC. It is based on the work of Jordi Munoz, William Premerlani, Jose Julio, and Doug Weibel.
+- "Pololu_Open_IMU":https://github.com/mikeshub/Pololu_Open_IMU/tree/master/Pololu_Open_IMU by mikeshub := This is an alternative AHRS implementation that uses the "Madgwick algorithm":http://www.x-io.co.uk/open-source-imu-and-ahrs-algorithms/.
+- "ascii_graph":https://gist.github.com/drewtm/9081341 by drewtm := This sketch outputs a text-based graph of LSM303 accelerometer and L3G gyro data, providing a quick way to check whether the sensors are working as expected.
+
 h2. Library Reference
 
 - @vector<int16_t> a@ := The last values read from the accelerometer.
