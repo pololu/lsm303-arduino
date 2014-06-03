@@ -292,21 +292,21 @@ void LSM303::enableDefault(void)
 }
 
 // Writes an accelerometer register
-void LSM303::writeAccReg(regAddr reg, byte value)
+void LSM303::writeAccReg(byte reg, byte value)
 {
   Wire.beginTransmission(acc_address);
-  Wire.write((byte)reg);
+  Wire.write(reg);
   Wire.write(value);
   last_status = Wire.endTransmission();
 }
 
 // Reads an accelerometer register
-byte LSM303::readAccReg(regAddr reg)
+byte LSM303::readAccReg(byte reg)
 {
   byte value;
 
   Wire.beginTransmission(acc_address);
-  Wire.write((byte)reg);
+  Wire.write(reg);
   last_status = Wire.endTransmission();
   Wire.requestFrom(acc_address, (byte)1);
   value = Wire.read();
@@ -316,16 +316,16 @@ byte LSM303::readAccReg(regAddr reg)
 }
 
 // Writes a magnetometer register
-void LSM303::writeMagReg(regAddr reg, byte value)
+void LSM303::writeMagReg(byte reg, byte value)
 {
   Wire.beginTransmission(mag_address);
-  Wire.write((byte)reg);
+  Wire.write(reg);
   Wire.write(value);
   last_status = Wire.endTransmission();
 }
 
 // Reads a magnetometer register
-byte LSM303::readMagReg(regAddr reg)
+byte LSM303::readMagReg(byte reg)
 {
   byte value;
 
@@ -336,7 +336,7 @@ byte LSM303::readMagReg(regAddr reg)
   }
 
   Wire.beginTransmission(mag_address);
-  Wire.write((byte)reg);
+  Wire.write(reg);
   last_status = Wire.endTransmission();
   Wire.requestFrom(mag_address, (byte)1);
   value = Wire.read();
@@ -345,7 +345,7 @@ byte LSM303::readMagReg(regAddr reg)
   return value;
 }
 
-void LSM303::writeReg(regAddr reg, byte value)
+void LSM303::writeReg(byte reg, byte value)
 {
   // mag address == acc_address for LSM303D, so it doesn't really matter which one we use.
   // Use writeMagReg so it can translate OUT_[XYZ]_[HL]_M
@@ -361,7 +361,7 @@ void LSM303::writeReg(regAddr reg, byte value)
 
 // Note that this function will not work for reading TEMP_OUT_H_M and TEMP_OUT_L_M on the DLHC.
 // To read those two registers, use readMagReg() instead.
-byte LSM303::readReg(regAddr reg)
+byte LSM303::readReg(byte reg)
 {
   // mag address == acc_address for LSM303D, so it doesn't really matter which one we use.
   // Use writeMagReg so it can translate OUT_[XYZ]_[HL]_M

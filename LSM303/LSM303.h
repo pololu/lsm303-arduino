@@ -174,13 +174,13 @@ class LSM303
 
     void enableDefault(void);
 
-    void writeAccReg(regAddr reg, byte value);
-    byte readAccReg(regAddr reg);
-    void writeMagReg(regAddr reg, byte value);
-    byte readMagReg(regAddr reg);
+    void writeAccReg(byte reg, byte value);
+    byte readAccReg(byte reg);
+    void writeMagReg(byte reg, byte value);
+    byte readMagReg(byte reg);
 
-    void writeReg(regAddr reg, byte value);
-    byte readReg(regAddr reg);
+    void writeReg(byte reg, byte value);
+    byte readReg(byte reg);
 
     void readAcc(void);
     void readMag(void);
