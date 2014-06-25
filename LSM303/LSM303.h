@@ -170,17 +170,17 @@ class LSM303
     LSM303(void);
 
     bool init(deviceType device = device_auto, sa0State sa0 = sa0_auto);
-    byte getDeviceType(void) { return _device; }
+    deviceType getDeviceType(void) { return _device; }
 
     void enableDefault(void);
 
     void writeAccReg(byte reg, byte value);
     byte readAccReg(byte reg);
     void writeMagReg(byte reg, byte value);
-    byte readMagReg(byte reg);
+    byte readMagReg(int reg);
 
     void writeReg(byte reg, byte value);
-    byte readReg(byte reg);
+    byte readReg(int reg);
 
     void readAcc(void);
     void readMag(void);

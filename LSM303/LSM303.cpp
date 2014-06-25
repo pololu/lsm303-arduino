@@ -325,7 +325,7 @@ void LSM303::writeMagReg(byte reg, byte value)
 }
 
 // Reads a magnetometer register
-byte LSM303::readMagReg(byte reg)
+byte LSM303::readMagReg(int reg)
 {
   byte value;
 
@@ -348,7 +348,6 @@ byte LSM303::readMagReg(byte reg)
 void LSM303::writeReg(byte reg, byte value)
 {
   // mag address == acc_address for LSM303D, so it doesn't really matter which one we use.
-  // Use writeMagReg so it can translate OUT_[XYZ]_[HL]_M
   if (_device == device_D || reg < CTRL_REG1_A)
   {
     writeMagReg(reg, value);
@@ -361,10 +360,10 @@ void LSM303::writeReg(byte reg, byte value)
 
 // Note that this function will not work for reading TEMP_OUT_H_M and TEMP_OUT_L_M on the DLHC.
 // To read those two registers, use readMagReg() instead.
-byte LSM303::readReg(byte reg)
+byte LSM303::readReg(int reg)
 {
   // mag address == acc_address for LSM303D, so it doesn't really matter which one we use.
-  // Use writeMagReg so it can translate OUT_[XYZ]_[HL]_M
+  // Use readMagReg so it can translate OUT_[XYZ]_[HL]_M
   if (_device == device_D || reg < CTRL_REG1_A)
   {
     return readMagReg(reg);
