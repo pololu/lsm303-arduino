@@ -6,13 +6,13 @@
 
 // The Arduino two-wire interface uses a 7-bit number for the address,
 // and sets the last bit correctly based on reads and writes
-#define D_SA0_HIGH_ADDRESS              0b0011101 // D with SA0 high
-#define D_SA0_LOW_ADDRESS               0b0011110 // D with SA0 low or non-D magnetometer
-#define NON_D_MAG_ADDRESS               0b0011110 // D with SA0 low or non-D magnetometer
-#define NON_D_ACC_SA0_LOW_ADDRESS       0b0011000 // non-D accelerometer with SA0 low
-#define NON_D_ACC_SA0_HIGH_ADDRESS      0b0011001 // non-D accelerometer with SA0 high
+#define D_SA0_HIGH_ADDRESS                0b0011101
+#define D_SA0_LOW_ADDRESS                 0b0011110
+#define DLHC_DLM_DLH_MAG_ADDRESS          0b0011110
+#define DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS 0b0011001
+#define DLM_DLH_ACC_SA0_LOW_ADDRESS       0b0011000
 
-#define TEST_REG_NACK -1
+#define TEST_REG_ERROR -1
 
 #define D_WHO_ID    0x49
 #define DLM_WHO_ID  0x3C
@@ -44,7 +44,6 @@ bool LSM303::timeoutOccurred()
   bool tmp = did_timeout;
   did_timeout = false;
   return tmp;
-
 }
 
 void LSM303::setTimeout(unsigned int timeout)
@@ -59,93 +58,71 @@ unsigned int LSM303::getTimeout()
 
 bool LSM303::init(deviceType device, sa0State sa0)
 {
-  // determine device type if necessary
-  if (device == device_auto)
+  // perform auto-detection unless device type and SA0 state were both specified
+  if (device == device_auto || sa0 == sa0_auto)
   {
-    if (testReg(D_SA0_HIGH_ADDRESS, WHO_AM_I) == D_WHO_ID)
+    // check for LSM303D if device is unidentified or was specified to be this type
+    if (device == device_auto || device == device_D)
     {
-      // device responds to address 0011101 with D ID; it's a D with SA0 high
-      device = device_D;
-      sa0 = sa0_high;
-    }
-    else if (testReg(D_SA0_LOW_ADDRESS, WHO_AM_I) == D_WHO_ID)
-    {
-      // device responds to address 0011110 with D ID; it's a D with SA0 low
-      device = device_D;
-      sa0 = sa0_low;
-    }
-    // Remaining possibilities: DLHC, DLM, or DLH. DLHC seems to respond to WHO_AM_I request the
-    // same way as DLM, even though this register isn't documented in its datasheet, so instead,
-    // guess if it's a DLHC based on acc address (Pololu boards pull SA0 low on DLM and DLH;
-    // DLHC doesn't have SA0 but uses same acc address as DLH/DLM with SA0 high).
-    else if (testReg(NON_D_ACC_SA0_HIGH_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
-    {
-      // device responds to address 0011001; guess that it's a DLHC
-      device = device_DLHC;
-      sa0 = sa0_high;
-    }
-    // Remaining possibilities: DLM or DLH. Check acc with SA0 low address to make sure it's responsive
-    else if (testReg(NON_D_ACC_SA0_LOW_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
-    {
-      // device responds to address 0011000 with DLM ID; guess that it's a DLM
-      sa0 = sa0_low;
-
-      // Now check WHO_AM_I_M
-      if (testReg(NON_D_MAG_ADDRESS, WHO_AM_I_M) == DLM_WHO_ID)
+      // check SA0 high address unless SA0 was specified to be low
+      if (sa0 != sa0_low && testReg(D_SA0_HIGH_ADDRESS, WHO_AM_I) == D_WHO_ID)
       {
-        device = device_DLM;
+        // device responds to address 0011101 with D ID; it's a D with SA0 high
+        device = device_D;
+        sa0 = sa0_high;
       }
-      else
+      // check SA0 low address unless SA0 was specified to be high
+      else if (sa0 != sa0_high && testReg(D_SA0_LOW_ADDRESS, WHO_AM_I) == D_WHO_ID)
       {
-        device = device_DLH;
+        // device responds to address 0011110 with D ID; it's a D with SA0 low
+        device = device_D;
+        sa0 = sa0_low;
       }
     }
-    else
+    
+    // check for LSM303DLHC, DLM, DLH if device is still unidentified or was specified to be one of these types
+    if (device == device_auto || device == device_DLHC || device == device_DLM || device == device_DLH)
     {
-      // device hasn't responded meaningfully, so give up
+      // check SA0 high address unless SA0 was specified to be low
+      if (sa0 != sa0_low && testReg(DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS, CTRL_REG1_A) != TEST_REG_ERROR)
+      {
+        // device responds to address 0011001; it's a DLHC, DLM with SA0 high, or DLH with SA0 high
+        sa0 = sa0_high;
+        if (device == device_auto)
+        { 
+          // use magnetometer WHO_AM_I register to determine device type
+          //
+          // DLHC seems to respond to WHO_AM_I request the same way as DLM, even though this
+          // register isn't documented in its datasheet. Since the DLHC accelerometer address is the
+          // same as the DLM with SA0 high, but Pololu DLM boards pull SA0 low by default, we'll
+          // guess that a device whose accelerometer responds to the SA0 high address and whose
+          // magnetometer gives the DLM ID is actually a DLHC.
+          device = (testReg(DLHC_DLM_DLH_MAG_ADDRESS, WHO_AM_I_M) == DLM_WHO_ID) ? device_DLHC : device_DLH;
+        }
+      }
+      // check SA0 low address unless SA0 was specified to be high
+      else if (sa0 != sa0_high && testReg(DLM_DLH_ACC_SA0_LOW_ADDRESS, CTRL_REG1_A) != TEST_REG_ERROR)
+      {
+        // device responds to address 0011000; it's a DLM with SA0 low or DLH with SA0 low
+        sa0 = sa0_low;
+        if (device == device_auto)
+        {
+          // use magnetometer WHO_AM_I register to determine device type
+          device = (testReg(DLHC_DLM_DLH_MAG_ADDRESS, WHO_AM_I_M) == DLM_WHO_ID) ? device_DLM : device_DLH;
+        }
+        
+      }
+    }
+    
+    // make sure device and SA0 were successfully detected; otherwise, indicate failure
+    if (device == device_auto || sa0 == sa0_auto)
+    {
       return false;
     }
   }
-
-  // determine SA0 if necessary
-  if (sa0 == sa0_auto)
-  {
-    if (device == device_D)
-    {
-      if (testReg(D_SA0_HIGH_ADDRESS, WHO_AM_I) == D_WHO_ID)
-      {
-        sa0 = sa0_high;
-      }
-      else if (testReg(D_SA0_LOW_ADDRESS, WHO_AM_I) == D_WHO_ID)
-      {
-        sa0 = sa0_low;
-      }
-      else
-      {
-        // no response on either possible address; give up
-        return false;
-      }
-    }
-    else if (device == device_DLM || device == device_DLH)
-    {
-      if (testReg(NON_D_ACC_SA0_HIGH_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
-      {
-        sa0 = sa0_high;
-      }
-      else if (testReg(NON_D_ACC_SA0_LOW_ADDRESS, CTRL_REG1_A) != TEST_REG_NACK)
-      {
-        sa0 = sa0_low;
-      }
-      else
-      {
-        // no response on either possible address; give up
-        return false;
-      }
-    }
-  }
-
+  
   _device = device;
-
+  
   // set device addresses and translated register addresses
   switch (device)
   {
@@ -160,8 +137,8 @@ bool LSM303::init(deviceType device, sa0State sa0)
       break;
 
     case device_DLHC:
-      acc_address = NON_D_ACC_SA0_HIGH_ADDRESS; // DLHC doesn't have SA0 but uses same acc address as DLH/DLM with SA0 high
-      mag_address = NON_D_MAG_ADDRESS;
+      acc_address = DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS; // DLHC doesn't have configurable SA0 but uses same acc address as DLM/DLH with SA0 high
+      mag_address = DLHC_DLM_DLH_MAG_ADDRESS;
       translated_regs[-OUT_X_H_M] = DLHC_OUT_X_H_M;
       translated_regs[-OUT_X_L_M] = DLHC_OUT_X_L_M;
       translated_regs[-OUT_Y_H_M] = DLHC_OUT_Y_H_M;
@@ -171,8 +148,8 @@ bool LSM303::init(deviceType device, sa0State sa0)
       break;
 
     case device_DLM:
-      acc_address = (sa0 == sa0_high) ? NON_D_ACC_SA0_HIGH_ADDRESS : NON_D_ACC_SA0_LOW_ADDRESS;
-      mag_address = NON_D_MAG_ADDRESS;
+      acc_address = (sa0 == sa0_high) ? DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS : DLM_DLH_ACC_SA0_LOW_ADDRESS;
+      mag_address = DLHC_DLM_DLH_MAG_ADDRESS;
       translated_regs[-OUT_X_H_M] = DLM_OUT_X_H_M;
       translated_regs[-OUT_X_L_M] = DLM_OUT_X_L_M;
       translated_regs[-OUT_Y_H_M] = DLM_OUT_Y_H_M;
@@ -182,8 +159,8 @@ bool LSM303::init(deviceType device, sa0State sa0)
       break;
 
     case device_DLH:
-      acc_address = (sa0 == sa0_high) ? NON_D_ACC_SA0_HIGH_ADDRESS : NON_D_ACC_SA0_LOW_ADDRESS;
-      mag_address = NON_D_MAG_ADDRESS;
+      acc_address = (sa0 == sa0_high) ? DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS : DLM_DLH_ACC_SA0_LOW_ADDRESS;
+      mag_address = DLHC_DLM_DLH_MAG_ADDRESS;
       translated_regs[-OUT_X_H_M] = DLH_OUT_X_H_M;
       translated_regs[-OUT_X_L_M] = DLH_OUT_X_L_M;
       translated_regs[-OUT_Y_H_M] = DLH_OUT_Y_H_M;
@@ -192,6 +169,7 @@ bool LSM303::init(deviceType device, sa0State sa0)
       translated_regs[-OUT_Z_L_M] = DLH_OUT_Z_L_M;
       break;
   }
+  
   return true;
 }
 
@@ -511,11 +489,18 @@ int LSM303::testReg(byte address, regAddr reg)
 {
   Wire.beginTransmission(address);
   Wire.write((byte)reg);
-  last_status = Wire.endTransmission();
+  if (Wire.endTransmission() != 0)
+  {
+    return TEST_REG_ERROR;
+  }
 
   Wire.requestFrom(address, (byte)1);
   if (Wire.available())
+  {
     return Wire.read();
+  }
   else
-    return TEST_REG_NACK;
+  {
+    return TEST_REG_ERROR;
+  }
 }
