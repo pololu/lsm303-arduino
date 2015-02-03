@@ -110,8 +110,8 @@ class LSM303
       IRB_REG_M         = 0x0B, // DLH, DLM, DLHC
       IRC_REG_M         = 0x0C, // DLH, DLM, DLHC
 
-      WHO_AM_I_M        = 0x0F, // DLM
       WHO_AM_I          = 0x0F, // D
+      WHO_AM_I_M        = 0x0F, // DLM
 
       TEMP_OUT_H_M      = 0x31, // DLHC
       TEMP_OUT_L_M      = 0x32, // DLHC
@@ -199,7 +199,7 @@ class LSM303
     static void vector_normalize(vector<float> *a);
 
   private:
-    deviceType _device; // chip type (DLH, DLM, or DLHC)
+    deviceType _device; // chip type (D, DLHC, DLM, or DLH)
     byte acc_address;
     byte mag_address;
 
