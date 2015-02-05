@@ -195,7 +195,7 @@ class LSM303
 
     // vector functions
     template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
-    template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a,const vector<Tb> *b);
+    template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a, const vector<Tb> *b);
     static void vector_normalize(vector<float> *a);
 
   private:
@@ -248,7 +248,7 @@ template <typename T> float LSM303::heading(vector<T> from)
     return heading;
 }
 
-template <typename Ta, typename Tb, typename To> void LSM303::vector_cross(const vector<Ta> *a,const vector<Tb> *b, vector<To> *out)
+template <typename Ta, typename Tb, typename To> void LSM303::vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out)
 {
   out->x = (a->y * b->z) - (a->z * b->y);
   out->y = (a->z * b->x) - (a->x * b->z);

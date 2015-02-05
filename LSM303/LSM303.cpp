@@ -110,7 +110,6 @@ bool LSM303::init(deviceType device, sa0State sa0)
           // use magnetometer WHO_AM_I register to determine device type
           device = (testReg(DLHC_DLM_DLH_MAG_ADDRESS, WHO_AM_I_M) == DLM_WHO_ID) ? device_DLM : device_DLH;
         }
-        
       }
     }
     
@@ -193,7 +192,7 @@ void LSM303::enableDefault(void)
   {
     // Accelerometer
 
-    // 0x57 = 0b01010111
+    // 0x00 = 0b00000000
     // AFS = 0 (+/- 2 g full scale)
     writeReg(CTRL2, 0x00);
 
@@ -215,43 +214,30 @@ void LSM303::enableDefault(void)
     // MLP = 0 (low power mode off); MD = 00 (continuous-conversion mode)
     writeReg(CTRL7, 0x00);
   }
-  else if (_device == device_DLHC)
+  else
   {
     // Accelerometer
+    
+    if (_device == device_DLHC)
+    {
+      // 0x08 = 0b00001000
+      // FS = 00 (+/- 2 g full scale); HR = 1 (high resolution enable)
+      writeAccReg(CTRL_REG4_A, 0x08);
 
-    // 0x08 = 0b00001000
-    // FS = 00 (+/- 2 g full scale); HR = 1 (high resolution enable)
-    writeAccReg(CTRL_REG4_A, 0x08);
+      // 0x47 = 0b01000111
+      // ODR = 0100 (50 Hz ODR); LPen = 0 (normal mode); Zen = Yen = Xen = 1 (all axes enabled)
+      writeAccReg(CTRL_REG1_A, 0x47);
+    }
+    else // DLM, DLH
+    {
+      // 0x00 = 0b00000000
+      // FS = 00 (+/- 2 g full scale)
+      writeAccReg(CTRL_REG4_A, 0x00);
 
-    // 0x47 = 0b01000111
-    // ODR = 0100 (50 Hz ODR); LPen = 0 (normal mode); Zen = Yen = Xen = 1 (all axes enabled)
-    writeAccReg(CTRL_REG1_A, 0x47);
-
-    // Magnetometer
-
-    // 0x0C = 0b00001100
-    // DO = 011 (7.5 Hz ODR)
-    writeMagReg(CRA_REG_M, 0x0C);
-
-    // 0x20 = 0b00100000
-    // GN = 001 (+/- 1.3 gauss full scale)
-    writeMagReg(CRB_REG_M, 0x20);
-
-    // 0x00 = 0b00000000
-    // MD = 00 (continuous-conversion mode)
-    writeMagReg(MR_REG_M, 0x00);
-  }
-  else // DLM, DLH
-  {
-    // Accelerometer
-
-    // 0x00 = 0b00000000
-    // FS = 00 (+/- 2 g full scale)
-    writeAccReg(CTRL_REG4_A, 0x00);
-
-    // 0x27 = 0b00100111
-    // PM = 001 (normal mode); DR = 00 (50 Hz ODR); Zen = Yen = Xen = 1 (all axes enabled)
-    writeAccReg(CTRL_REG1_A, 0x27);
+      // 0x27 = 0b00100111
+      // PM = 001 (normal mode); DR = 00 (50 Hz ODR); Zen = Yen = Xen = 1 (all axes enabled)
+      writeAccReg(CTRL_REG1_A, 0x27);
+    }
 
     // Magnetometer
 
@@ -409,7 +395,7 @@ void LSM303::readMag(void)
 
   if (_device == device_D)
   {
-    /// D: X_L, X_H, Y_L, Y_H, Z_L, Z_H
+    // D: X_L, X_H, Y_L, Y_H, Z_L, Z_H
     xlm = Wire.read();
     xhm = Wire.read();
     ylm = Wire.read();
