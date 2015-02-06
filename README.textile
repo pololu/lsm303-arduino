@@ -9,14 +9,13 @@ h2. Summary
 This is a library for the "Arduino":http://pololu.com/catalog/product/2191 that interfaces with LSM303D, LSM303DLHC, LSM303DLM, and LSM303DLH 3D compass and accelerometer ICs on Pololu boards. It makes it simple to read the raw accelerometer and magnetometer data from these boards:
 
 * "LSM303D 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/2127
-
 * "LSM303DLM 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1273
 * "MinIMU-9 v3 <notextile>(L3GD20H and LSM303D carrier)</notextile>":http://www.pololu.com/catalog/product/2468
 * "AltIMU-10 v4 <notextile>(L3GD20H, LSM303D, and LPS25H carrier)</notextile>":http://www.pololu.com/catalog/product/2470
 * "AltIMU-10 v3 <notextile>(L3GD20H, LSM303D, and LSM331AP carrier)</notextile>":http://www.pololu.com/catalog/product/2469
 * "LSM303DLHC 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/2124 (discontinued)
 * "LSM303DLH 3D compass and accelerometer carrier":http://www.pololu.com/catalog/product/1250 (discontinued)
-* "MinIMU-9 v2 <notextile>(L3GD20 and LSM303DLHC carrier)</notextile>":http://www.pololu.com/catalog/product/1268
+* "MinIMU-9 v2 <notextile>(L3GD20 and LSM303DLHC carrier)</notextile>":http://www.pololu.com/catalog/product/1268 (discontinued)
 * "MinIMU-9 <notextile>(L3G4200D and LSM303DLM carrier)</notextile>":http://www.pololu.com/catalog/product/1265 (discontinued)
 * "MinIMU-9 <notextile>(L3G4200D and LSM303DLH carrier)</notextile>":http://www.pololu.com/catalog/product/1264 (discontinued)
 * "AltIMU-10 (L3GD20, LSM303DLHC, and LSM331AP carrier&#41;":http://www.pololu.com/catalog/product/1269 (discontinued)
