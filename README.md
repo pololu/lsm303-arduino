@@ -294,10 +294,10 @@ register addresses depending on the device type.
 * 1.2.0 (2011-11-15): Original release. (numbered to avoid confusion
   with our earlier
   [LSM303DLH library](https://github.com/pololu/LSM303DLH))
-      * Besides the name change, the main difference in this library
-        is that you need to call the `init()` function before using
-        any of the other library functions, typically from within the
-        Arduino `setup()` function. While the older library only works
-        with the Pololu boards' default accelerometer slave address of
-        0011000b, this library allows you to specify the slave address
-        with the `init()` function.
+    * Besides the name change, the main difference in this library is
+      that you need to call the `init()` function before using any of
+      the other library functions, typically from within the Arduino
+      `setup()` function. While the older library only works with the
+      Pololu boards' default accelerometer slave address of 0011000b,
+      this library allows you to specify the slave address with the
+      `init()` function.
