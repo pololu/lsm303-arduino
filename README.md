@@ -1,6 +1,6 @@
 # Arduino library for Pololu LSM303 boards
 
-Version: 3.0.0 <br>
+Version: 3.0.1 <br>
 Release date: 2016-08-17 <br>
 [![Build Status](https://travis-ci.org/pololu/lsm303-arduino.svg?branch=master)](https://travis-ci.org/pololu/lsm303-arduino)<br>
 [www.pololu.com](https://www.pololu.com/)
@@ -256,6 +256,8 @@ register addresses depending on the device type.
 
 ## Version history
 
+* 3.0.1 (2016-08-17): Used PI instead of M_PI because M_PI is not
+  defined for Arduino/Genuino 101.
 * 3.0.0 (2016-08-17): Updated library to work with the Arduino Library Manager.
 * 2.1.0 (2015-02-05): Improved autodetect behavior in `init()`;
   reverted argument types in register access functions to allow
