@@ -147,7 +147,7 @@ the library archive or repository.
   readings that can be visualized with a 3D test program on a PC. It
   is based on the work of Jordi Munoz, William Premerlani, Jose Julio,
   and Doug Weibel.
-- [Pololu_Open_IMU](https://github.com/mikeshub/Pololu_Open_IMU/tree/master/Pololu_Open_IMU)
+- [Pololu_Open_IMU](https://github.com/mikeshub/Pololu_Open_IMU)
   by mikeshub <br> This is an alternative AHRS implementation that
   uses the
   [Madgwick algorithm](http://www.x-io.co.uk/open-source-imu-and-ahrs-algorithms/).
