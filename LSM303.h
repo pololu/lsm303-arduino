@@ -243,7 +243,7 @@ template <typename T> float LSM303::heading(vector<T> from)
     vector_normalize(&N);
 
     // compute heading
-    float heading = atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / M_PI;
+    float heading = atan2(vector_dot(&E, &from), vector_dot(&N, &from)) * 180 / PI;
     if (heading < 0) heading += 360;
     return heading;
 }
