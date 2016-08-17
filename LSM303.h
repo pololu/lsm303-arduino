@@ -261,6 +261,3 @@ template <typename Ta, typename Tb> float LSM303::vector_dot(const vector<Ta> *a
 }
 
 #endif
-
-
-
