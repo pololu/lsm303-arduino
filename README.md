@@ -78,7 +78,7 @@ the Library Manager to install this library:
 If this does not work, you can manually install the library:
 
 1. Download the
-   [latest release archive from GitHub](https://github.com/pololu/lps-arduino/releases)
+   [latest release archive from GitHub](https://github.com/pololu/lsm303-arduino/releases)
    and decompress it.
 2. Rename the folder "lps-arduino-xxxx" to "LSM303".
 3. Drag the "LSM303" folder into the "libraries" directory inside your
