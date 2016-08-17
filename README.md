@@ -168,8 +168,8 @@ the library archive or repository.
   magnetometer readings on each axis; set this appropriately to
   calibrate `heading()`.
 - `byte last_status` <br> The status of the last I2C transmission. See
-  the "`Wire.endTransmission()`
-  documentation":https://arduino.cc/en/Reference/WireEndTransmission
+  the [`Wire.endTransmission()`
+  documentation](https://arduino.cc/en/Reference/WireEndTransmission)
   for return values.
 - `LSM303(void)` <br> Constructor; initializes `m_min` and `m_max`
   with placeholder values.
