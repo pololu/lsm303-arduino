@@ -14,10 +14,10 @@ compass and accelerometer ICs on Pololu boards. It makes it simple to
 read the raw accelerometer and magnetometer data from these boards:
 
 * [LSM303D 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/2127)
-* [LSM303DLM 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/1273)
 * [MinIMU-9 v3 (L3GD20H and LSM303D carrier)](http://www.pololu.com/catalog/product/2468)
 * [AltIMU-10 v4 (L3GD20H, LSM303D, and LPS25H carrier)](http://www.pololu.com/catalog/product/2470)
 * [AltIMU-10 v3 (L3GD20H, LSM303D, and LSM331AP carrier)](http://www.pololu.com/catalog/product/2469)
+* [LSM303DLM 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/1273) (discontinued)
 * [LSM303DLHC 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/2124) (discontinued)
 * [LSM303DLH 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/1250) (discontinued)
 * [MinIMU-9 v2 (L3GD20 and LSM303DLHC carrier)](http://www.pololu.com/catalog/product/1268) (discontinued)
