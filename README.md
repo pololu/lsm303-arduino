@@ -13,17 +13,17 @@ interfaces with LSM303D, LSM303DLHC, LSM303DLM, and LSM303DLH 3D
 compass and accelerometer ICs on Pololu boards. It makes it simple to
 read the raw accelerometer and magnetometer data from these boards:
 
-* [LSM303D 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/2127)
-* [MinIMU-9 v3 (L3GD20H and LSM303D carrier)](http://www.pololu.com/catalog/product/2468)
-* [AltIMU-10 v4 (L3GD20H, LSM303D, and LPS25H carrier)](http://www.pololu.com/catalog/product/2470)
-* [AltIMU-10 v3 (L3GD20H, LSM303D, and LSM331AP carrier)](http://www.pololu.com/catalog/product/2469)
-* [LSM303DLM 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/1273) (discontinued)
-* [LSM303DLHC 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/2124) (discontinued)
-* [LSM303DLH 3D compass and accelerometer carrier](http://www.pololu.com/catalog/product/1250) (discontinued)
-* [MinIMU-9 v2 (L3GD20 and LSM303DLHC carrier)](http://www.pololu.com/catalog/product/1268) (discontinued)
-* [MinIMU-9 (L3G4200D and LSM303DLM carrier)](http://www.pololu.com/catalog/product/1265) (discontinued)
-* [MinIMU-9 (L3G4200D and LSM303DLH carrier)](http://www.pololu.com/catalog/product/1264) (discontinued)
-* [AltIMU-10 (L3GD20, LSM303DLHC, and LSM331AP carrier)](http://www.pololu.com/catalog/product/1269) (discontinued)
+* [LSM303D 3D compass and accelerometer carrier](https://www.pololu.com/catalog/product/2127)
+* [MinIMU-9 v3 (L3GD20H and LSM303D carrier)](https://www.pololu.com/catalog/product/2468)
+* [AltIMU-10 v4 (L3GD20H, LSM303D, and LPS25H carrier)](https://www.pololu.com/catalog/product/2470)
+* [AltIMU-10 v3 (L3GD20H, LSM303D, and LSM331AP carrier)](https://www.pololu.com/catalog/product/2469)
+* [LSM303DLM 3D compass and accelerometer carrier](https://www.pololu.com/catalog/product/1273) (discontinued)
+* [LSM303DLHC 3D compass and accelerometer carrier](https://www.pololu.com/catalog/product/2124) (discontinued)
+* [LSM303DLH 3D compass and accelerometer carrier](https://www.pololu.com/catalog/product/1250) (discontinued)
+* [MinIMU-9 v2 (L3GD20 and LSM303DLHC carrier)](https://www.pololu.com/catalog/product/1268) (discontinued)
+* [MinIMU-9 (L3G4200D and LSM303DLM carrier)](https://www.pololu.com/catalog/product/1265) (discontinued)
+* [MinIMU-9 (L3G4200D and LSM303DLH carrier)](https://www.pololu.com/catalog/product/1264) (discontinued)
+* [AltIMU-10 (L3GD20, LSM303DLHC, and LSM331AP carrier)](https://www.pololu.com/catalog/product/1269) (discontinued)
 
 The library also includes a function for computing the
 tilt-compensated heading for those looking to use the LSM303 as a
@@ -169,7 +169,7 @@ the library archive or repository.
   calibrate `heading()`.
 - `byte last_status` <br> The status of the last I2C transmission. See
   the "`Wire.endTransmission()`
-  documentation":http://arduino.cc/en/Reference/WireEndTransmission
+  documentation":https://arduino.cc/en/Reference/WireEndTransmission
   for return values.
 - `LSM303(void)` <br> Constructor; initializes `m_min` and `m_max`
   with placeholder values.
