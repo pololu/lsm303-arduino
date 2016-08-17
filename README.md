@@ -181,9 +181,10 @@ the library archive or repository.
   and only for the accelerometer in some cases). Constants for these
   arguments are defined in LSM303.h. Both of these arguments are
   optional; if they are not specified, the library will try to
-  automatically detect the device and accelerometer address
-  <sup>[1](#f1)</sup>. A boolean is returned indicating whether the
-  type of LSM303 device was successfully determined (if necessary).
+  automatically detect the device and accelerometer
+  address[[1]](#f1). A boolean is returned indicating whether
+  the type of LSM303 device was successfully determined (if
+  necessary).
 - `byte getDeviceType(void)` <br> Returns the device type specified to
   or detected by `init()`.
 - `void enableDefault(void)` <br> Turns on the accelerometer and
@@ -198,7 +199,7 @@ the library archive or repository.
   are defined by the regAddr enumeration type in LSM303.h.  Example
   use: `compass.writeReg(LSM303::CTRL_REG1_A, 0x57);`
 - `void readReg(int reg)` <br> Reads an accelerometer or magnetometer
-  register and returns the value read.<sup>[2](#f2)</sup><sup>[3](#f3)</sup>
+  register and returns the value read.[[2]](#f2)[[3]](#f3)
 - `void writeAccReg(byte reg, byte value)` <br> Writes an
   accelerometer register with the given value.
 - `byte readAccReg(byte reg)` <br> Reads an accelerometer register and
@@ -206,7 +207,7 @@ the library archive or repository.
 - `void writeMagReg(byte reg, byte value)` <br> Writes a magnetometer
   register with the given value.
 - `byte readMagReg(int reg)` <br> Reads a magnetometer register and
-  returns the value read.<sup>[3](#f3)</sup>
+  returns the value read.[[3]](#f3)
 - `void readAcc(void)` <br> Takes a reading from the accelerometer and
   stores the values in the vector `a`. Conversion of the readings to
   units of g depends on the accelerometer's selected gain (full scale
