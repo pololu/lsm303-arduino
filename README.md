@@ -33,35 +33,34 @@ tilt-compensated compass.
 
 ### Hardware
 
+A LSM303 carrier can be purchased from Pololu's website. Before
+continuing, careful reading of the product page as well as the chip
+datasheet is recommended.
+
 Make the following connections with wires between the Arduino and the
 LSM303 board:
 
-#### Arduino Uno R3, Leonardo, Mega 2560
+#### 5V Arduino boards
 
-    Arduino      LSM303 board
-    -------------------------
-         5V  ->  VIN
-        GND  ->  GND
-        SDA  ->  SDA
-        SCL  ->  SCL
+(including Arduino Uno, Leonardo, Mega; Pololu A-Star 32U4)
 
-#### Arduino Micro
+    Arduino   LSM303 board
+    -------   ------------
+         5V - VIN
+        GND - GND
+        SDA - SDA
+        SCL - SCL
 
-    Arduino      LSM303 board
-    -------------------------
-         5V  ->  VIN
-        GND  ->  GND
-          2  ->  SDA
-          3  ->  SCL
+#### 3.3V Arduino boards
 
-#### Arduino Uno (up to R2), Duemilanove, etc.
+(including Arduino Due)
 
-    Arduino      LSM303 board
-    -------------------------
-         5V  ->  VIN
-        GND  ->  GND
-         A4  ->  SDA
-         A5  ->  SCL
+    Arduino   LSM303 board
+    -------   ------------
+        3V3 - VIN
+        GND - GND
+        SDA - SDA
+        SCL - SCL
 
 ### Software
 
