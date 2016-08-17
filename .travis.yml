@@ -8,12 +8,14 @@ install:
 - pip install -U platformio
 
 env:
+- BOARD=uno
 - BOARD=leonardo
 - BOARD=micro
 - BOARD=megaatmega2560
 - BOARD=due
-- BOARD=uno
 - BOARD=yun
+- BOARD=genuino101
+- BOARD=zero
 
 script:
 - for e in examples/*; do
