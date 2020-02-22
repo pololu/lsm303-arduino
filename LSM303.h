@@ -11,7 +11,7 @@ class LSM303
       T x, y, z;
     };
 
-    enum deviceType { device_DLH, device_DLM, device_DLHC, device_D, device_auto };
+    enum deviceType { device_DLH, device_DLM, device_DLHC, device_D, device_AGR, device_auto };
     enum sa0State { sa0_low, sa0_high, sa0_auto };
 
     // register addresses

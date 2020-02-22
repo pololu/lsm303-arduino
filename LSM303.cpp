@@ -11,11 +11,14 @@
 #define DLHC_DLM_DLH_MAG_ADDRESS          0b0011110
 #define DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS 0b0011001
 #define DLM_DLH_ACC_SA0_LOW_ADDRESS       0b0011000
+#define AGR_ACC_SA0_HIGH_ADDRESS          0b0011001
+#define AGR_ACC_SA0_LOW_ADDRESS           0b0011000
 
 #define TEST_REG_ERROR -1
 
 #define D_WHO_ID    0x49
 #define DLM_WHO_ID  0x3C
+#define AGR_WHO_ID  0x33
 
 // Constructors ////////////////////////////////////////////////////////////////
 
@@ -58,9 +61,25 @@ unsigned int LSM303::getTimeout()
 
 bool LSM303::init(deviceType device, sa0State sa0)
 {
+
   // perform auto-detection unless device type and SA0 state were both specified
   if (device == device_auto || sa0 == sa0_auto)
   {
+      //It turns out that AGR has WHO_AM_I register, same as DLHC
+      //But its WHO_AM_I (0x0F) is in the ACC, not MAG
+      //MAG has a WHO_AM_I_M but at 0x4F
+      if (sa0 != sa0_low && testReg(AGR_ACC_SA0_HIGH_ADDRESS, WHO_AM_I) == AGR_WHO_ID)
+      {
+          device = device_AGR;
+          sa0 = sa0_high;
+
+      }
+      else if (sa0 != sa0_high && testReg(AGR_ACC_SA0_LOW_ADDRESS, WHO_AM_I) == AGR_WHO_ID)
+      {
+          device = device_AGR;
+          sa0 = sa0_low;
+      }
+
     // check for LSM303D if device is unidentified or was specified to be this type
     if (device == device_auto || device == device_D)
     {
@@ -134,7 +153,8 @@ bool LSM303::init(deviceType device, sa0State sa0)
       translated_regs[-OUT_Z_L_M] = D_OUT_Z_L_M;
       translated_regs[-OUT_Z_H_M] = D_OUT_Z_H_M;
       break;
-
+    
+    case device_AGR: //registers are same
     case device_DLHC:
       acc_address = DLHC_DLM_DLH_ACC_SA0_HIGH_ADDRESS; // DLHC doesn't have configurable SA0 but uses same acc address as DLM/DLH with SA0 high
       mag_address = DLHC_DLM_DLH_MAG_ADDRESS;
@@ -218,7 +238,7 @@ void LSM303::enableDefault(void)
   {
     // Accelerometer
     
-    if (_device == device_DLHC)
+    if (_device == device_DLHC || _device == device_AGR)
     {
       // 0x08 = 0b00001000
       // FS = 00 (+/- 2 g full scale); HR = 1 (high resolution enable)
