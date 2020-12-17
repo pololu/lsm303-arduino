@@ -2,7 +2,6 @@
 
 Version: 3.0.1 <br>
 Release date: 2016-08-17 <br>
-[![Build Status](https://travis-ci.org/pololu/lsm303-arduino.svg?branch=master)](https://travis-ci.org/pololu/lsm303-arduino)<br>
 [www.pololu.com](https://www.pololu.com/)
 
 ## Summary
